@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>TEACHER Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/lecturer/style.css}"/>
+    <!-- Favicon -->
+    <link href="img/icons8-admin-settings-male-16.png" rel="icon"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <aside>
+        <div class="navbar-top">
+            <div class="profile">
+                <div class="info">
+                    <h2>Welcome back, </h2>
+                    <p class="text-muted"
+                       th:text="${authen_user.firstName + ' ' + (authen_user.lastName == null ? '' : authen_user.lastName)}"></p>
+                </div>
+            </div>
+            <div class="btn-close">
+                <span class="material-symbols-outlined"> close </span>
+            </div>
+        </div>
+
+        <div class="navbar-content">
+            <a th:href="@{/lecturer}" class="active">
+                <span class="material-symbols-outlined"> grid_view </span>
+                <h3>Trang chủ</h3>
+            </a>
+            <a th:href="@{/lecturer/confirm}">
+                <span class="material-symbols-outlined"> grid_view </span>
+                <h3>Xác nhận đồ án</h3>
+            </a>
+            <a th:href="@{/lecturer/create_StudentWeeklyReport}">
+                <span class="material-symbols-outlined"> grid_view </span>
+                <h3>Tạo báo cáo</h3>
+            </a>
+            <a th:href="@{/lecturer/list_StudentWeeklyReport}">
+                <span class="material-symbols-outlined"> grid_view </span>
+                <h3>Xem báo cáo</h3>
+            </a>
+            <a th:href="@{/lecturer/evaluation}">
+                <span class="material-symbols-outlined"> grid_view </span>
+                <h3>Báo cáo của sinh viên</h3>
+            </a>
+            <a th:href="@{/lecturer/projectGrade}">
+                <span class="material-symbols-outlined"> grid_view </span>
+                <h3>Đánh giá đồ án</h3>
+            </a>
+            <a th:href="@{/lecturer/grade}">
+                <span class="material-symbols-outlined"> grid_view </span>
+                <h3>Bảng điểm</h3>
+            </a>
+            <a href="/perform_logout" class="logout">
+                <span class="material-symbols-outlined"> logout </span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+    </aside>
+    <main>
+        <h1 style="margin-bottom: 2rem">Teacher Dashboard</h1>
+
+        <h2>General Information</h2>
+        <div class="insights">
+            <div class="insight sales">
+                                        <span class="material-symbols-outlined">
+                                            analytics
+                                        </span>
+                <div class="insight-content">
+                    <div class="insight-figure">
+                        <h3>Total Money Gained</h3>
+<!--                        <p th:text="${sum}"></p>-->
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight products">
+                                        <span class="material-symbols-outlined">
+                                            inventory
+                                        </span>
+                <div class="insight-content">
+                    <div class="insight-figure">
+                        <h3>Total Shipped Orders</h3>
+<!--                        <p th:text="${count}"></p>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- USER TABLE -->
+        <div class="recent-orders">
+            <h2>Manage Orders</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Order Date</th>
+                    <th>Status</th>
+                    <th>View</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+<!--                <tbody th:each="i : ${order_set}">-->
+                <tr>
+<!--                    <td th:text="${i.orderId}"></td>-->
+<!--                    <td th:text="${i.name}"></td>-->
+<!--                    <td th:text="${i.phoneNumber}"></td>-->
+<!--                    <td th:text="${i.address}"></td>-->
+<!--                    <td th:text="${i.orderDate}">-->
+<!--                    </td>-->
+<!--                    <td class="status" th:text="${i.orderStatuses.size() == 2 ? 'Waitting' : 'Processing'}"></td>-->
+<!--                    <td><a th:href="@{/shipper/detail(id=${i.orderId})}" class="success">See-->
+<!--                        details</a></td>-->
+<!--                    <td>-->
+<!--                        <button type="button" th:onclick="'javascript:receiveOrder(\'' + ${i.orderId} +'\',\''+ ${i.orderStatuses.size()} + '\');'"-->
+<!--                                class="success" value="Take" th:if="${i.orderStatuses.size() == 2 }">Take</button>-->
+<!--                        <button type="button" th:onclick="'javascript:receiveOrder(\'' + ${i.orderId} +'\',\''+ ${i.orderStatuses.size()} + '\');'"-->
+<!--                                class="success" value="Confirm" th:unless="${i.orderStatuses.size() == 2 }">Confirm</button>-->
+<!--                    </td>-->
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+    const statuses = document.querySelectorAll('.status')
+    statuses.forEach(status => {
+        if (status.innerText === 'Completed') {
+            status.style.color = '#41f1b6'
+        } else if (status.innerText === 'Waiting') {
+            status.style.color = '#eaa636'
+        } else {
+            status.style.color = '#fc515f'
+        }
+    });
+
+    function receiveOrder(j, k) {
+        if (k == 2) {
+            var i = confirm('Do you want to receive Order?');
+            if (i === true) {
+                window.location.href = '/lecturer/receiveOrder?id=' + j;
+            }
+        } else {
+            var a = confirm("Shipped Successful??");
+            if (a === true) {
+                k = 'Giao hàng thành công';
+                window.location.href = '/lecturer/completeOrder?id=' + j + '&message=' + k;
+            }
+        }
+    }
+</script>
+</body>
+</html>
