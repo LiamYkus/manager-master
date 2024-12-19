@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: localhost:3306
--- Thời gian đã tạo: Th12 17, 2024 lúc 04:17 PM
+-- Thời gian đã tạo: Th12 19, 2024 lúc 04:38 PM
 -- Phiên bản máy phục vụ: 5.7.44
 -- Phiên bản PHP: 8.1.10
 
@@ -51,7 +51,7 @@ CREATE TABLE `hibernate_sequence` (
 --
 
 INSERT INTO `hibernate_sequence` (`next_val`) VALUES
-(25);
+(65);
 
 -- --------------------------------------------------------
 
@@ -67,19 +67,6 @@ CREATE TABLE `notification` (
   `user_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Đang đổ dữ liệu cho bảng `notification`
---
-
-INSERT INTO `notification` (`id`, `date`, `description`, `title`, `user_id`) VALUES
-(18, '2024-12-17 20:07:56.218000', 'Hãy bắt đầu cuộc hành trình thú vị của bạn tại nơi đây', 'Chào mừng bạn', 17),
-(19, '2024-12-17 20:08:12.482000', 'Bạn đăng ký đồ án Xây dựng Website rút tiền tự đông thành công. Vui lòng chờ Giảng viên phê duyệt!', 'Chúc mừng bạn', 17),
-(20, '2024-12-17 20:13:28.565000', 'Đồ án của bạn đã được xác nhận thành công!!!', 'Chúc mừng bạn đã đăng ký đồ án thành công', 17),
-(21, NULL, 'Đồ án Xây dựng Website rút tiền tự đông của bạn có lịch cho quá trình làm đồ án!!!', 'Đồ án Xây dựng Website rút tiền tự đông của bạn có lịch cho quá trình làm đồ án!!!', 17),
-(22, '2024-12-17 21:38:45.640000', 'Bạn đã gửi thành công báo cáo ngày Tue Dec 17 21:38:45 ICT 2024 !!!', 'Chúc mừng bạn', 17),
-(23, '2024-12-17 21:47:33.396000', 'Bạn đã được Giảng viên tothai090801 chấm điểm cho báo cáo!!!', 'Chúc mừng bạn', 17),
-(24, '2024-12-17 21:48:04.343000', 'Bạn đã được Giảng viên tothai090801 chấm điểm cho đồ án của bạn!!!', 'Chúc mừng bạn đã hoàn thành đồ án', 17);
-
 -- --------------------------------------------------------
 
 --
@@ -91,22 +78,13 @@ CREATE TABLE `project` (
   `department` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `end_date` date DEFAULT NULL,
-  `file` varchar(255) DEFAULT NULL,
+  `file` text,
   `max_students` int(11) DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Đang đổ dữ liệu cho bảng `project`
---
-
-INSERT INTO `project` (`project_id`, `department`, `description`, `end_date`, `file`, `max_students`, `start_date`, `status`, `title`, `user_id`) VALUES
-(1, 'CNTT', 'Phân tích và thiết kế Website bán đồ da', '2025-01-23', '/upload/serverjava.docx', 11, '2024-12-17', 'ChuaTienHanh', 'Phân tích và thiết kế Website bán đồ da', NULL),
-(2, 'CNTT', 'Phân tích và thiết kế Website bán đồ da', '2025-01-31', '/upload/dareu-ek75-pro.rar', 10, '2024-12-17', 'ChuaTienHanh', 'Lập trình Website bán nội thất', NULL),
-(3, 'CNTT', 'Xây dựng Website rút tiền tự đông', '2025-03-14', '/upload/JetBrains_ja-netfilter-all_Activation_Codes_Build_220801_Downloadly.ir.rar', 10, '2024-12-17', 'HoanThanh', 'Xây dựng Website rút tiền tự đông', NULL);
 
 -- --------------------------------------------------------
 
@@ -134,6 +112,20 @@ CREATE TABLE `project_lecturers` (
   `assignment_id` bigint(20) NOT NULL,
   `assignment_date` datetime(6) DEFAULT NULL,
   `lecturer_id` bigint(20) NOT NULL,
+  `project_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `project_milestones`
+--
+
+CREATE TABLE `project_milestones` (
+  `milestone_id` bigint(20) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `milestone_date` date NOT NULL,
+  `milestone_name` varchar(255) NOT NULL,
   `project_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -180,7 +172,7 @@ INSERT INTO `role` (`role_id`, `role_name`) VALUES
 CREATE TABLE `student_weekly_reports` (
   `student_report_id` bigint(20) NOT NULL,
   `comments` varchar(255) DEFAULT NULL,
-  `report_file_path` varchar(255) DEFAULT NULL,
+  `report_file_path` text,
   `submission_date` datetime(6) DEFAULT NULL,
   `weekly_report_grade` double DEFAULT NULL,
   `requirement_id` bigint(20) NOT NULL,
@@ -220,7 +212,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `active`, `address`, `class_name`, `code`, `department`, `dob`, `email`, `first_name`, `gender`, `image`, `last_name`, `major`, `otp`, `otp_requested_time`, `password`, `phone`, `username`, `role_id`) VALUES
-(1, b'1', NULL, NULL, NULL, NULL, '2001-11-20 00:00:00.000000', 'liamnesson110201@gmail.com', 'Tô', b'1', NULL, 'Liam', NULL, '008228', '2024-12-16 03:24:55.389000', '$2a$10$AalcM7AAxxl1T4HrkChJJ.Uwd/4IYcLWMZAcSAhCk1C7OPyRshQ9m', '0352578346', NULL, 2),
+(1, b'1', NULL, '70DCTT24', '70DCTT21271', 'Công Nghệ Thông Tin', '2001-11-20 00:00:00.000000', 'liamnesson110201@gmail.com', 'Tô', b'1', NULL, 'Liam', NULL, '008228', '2024-12-16 03:24:55.389000', '$2a$10$AalcM7AAxxl1T4HrkChJJ.Uwd/4IYcLWMZAcSAhCk1C7OPyRshQ9m', '0352578346', NULL, 2),
 (2, b'1', NULL, NULL, NULL, NULL, '2001-11-20 00:00:00.000000', 'jos1102@gmail.com', 'Tô', b'1', NULL, 'Liam', NULL, '008228', '2024-12-16 03:24:55.389000', '$2a$10$AalcM7AAxxl1T4HrkChJJ.Uwd/4IYcLWMZAcSAhCk1C7OPyRshQ9m', '0352578346', NULL, 2),
 (17, b'1', NULL, NULL, NULL, NULL, NULL, 'marythaovan1102@gmail.com', 'marythaovan1102', b'0', NULL, '', NULL, '029723', '2024-12-17 20:07:04.877000', '$2a$10$k3GaiU22STyvLsO8yb//MujV5PiQqrbImr8iAuQI9.Xm5S7GeKg3a', NULL, NULL, 2),
 (19, b'1', NULL, NULL, NULL, NULL, NULL, 'tothai090801@gmail.com', 'tothai090801', b'0', NULL, '', NULL, '632631', '2024-12-14 13:23:44.107000', '$2a$10$2lQEm1vp2Czw/xE7cu6q/.RqGBMT6v5KwlDEQYpzQpJPKwNFYbc6K', NULL, NULL, 3),
@@ -239,7 +231,10 @@ CREATE TABLE `weekly_requirements` (
   `description` varchar(255) DEFAULT NULL,
   `end_date` datetime(6) DEFAULT NULL,
   `start_date` datetime(6) DEFAULT NULL,
-  `project_id` bigint(20) NOT NULL
+  `project_id` bigint(20) NOT NULL,
+  `additional_requirements` varchar(255) DEFAULT NULL,
+  `important_dates` varchar(255) DEFAULT NULL,
+  `week_number` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -286,6 +281,13 @@ ALTER TABLE `project_lecturers`
   ADD KEY `FKlgxg4udrjhp5jowvecvvrobnm` (`project_id`);
 
 --
+-- Chỉ mục cho bảng `project_milestones`
+--
+ALTER TABLE `project_milestones`
+  ADD PRIMARY KEY (`milestone_id`),
+  ADD KEY `FKouxbnuncr376c0c5982bcvyn8` (`project_id`);
+
+--
 -- Chỉ mục cho bảng `project_registrations`
 --
 ALTER TABLE `project_registrations`
@@ -329,43 +331,49 @@ ALTER TABLE `weekly_requirements`
 -- AUTO_INCREMENT cho bảng `evaluations`
 --
 ALTER TABLE `evaluations`
-  MODIFY `evaluation_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `evaluation_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT cho bảng `project`
 --
 ALTER TABLE `project`
-  MODIFY `project_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `project_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT cho bảng `project_grades`
 --
 ALTER TABLE `project_grades`
-  MODIFY `project_grade_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `project_grade_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT cho bảng `project_lecturers`
 --
 ALTER TABLE `project_lecturers`
-  MODIFY `assignment_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `assignment_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT cho bảng `project_milestones`
+--
+ALTER TABLE `project_milestones`
+  MODIFY `milestone_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT cho bảng `project_registrations`
 --
 ALTER TABLE `project_registrations`
-  MODIFY `registration_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `registration_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `student_weekly_reports`
 --
 ALTER TABLE `student_weekly_reports`
-  MODIFY `student_report_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `student_report_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT cho bảng `weekly_requirements`
 --
 ALTER TABLE `weekly_requirements`
-  MODIFY `requirement_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `requirement_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -404,6 +412,12 @@ ALTER TABLE `project_grades`
 ALTER TABLE `project_lecturers`
   ADD CONSTRAINT `FKiw6c0o6drxsditadr8xx0m0gm` FOREIGN KEY (`lecturer_id`) REFERENCES `user` (`user_id`),
   ADD CONSTRAINT `FKlgxg4udrjhp5jowvecvvrobnm` FOREIGN KEY (`project_id`) REFERENCES `project` (`project_id`);
+
+--
+-- Các ràng buộc cho bảng `project_milestones`
+--
+ALTER TABLE `project_milestones`
+  ADD CONSTRAINT `FKouxbnuncr376c0c5982bcvyn8` FOREIGN KEY (`project_id`) REFERENCES `project` (`project_id`);
 
 --
 -- Các ràng buộc cho bảng `project_registrations`
