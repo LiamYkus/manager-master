@@ -5,17 +5,17 @@ import com.manager.DTO.WeeklyProject;
 import com.manager.model.Project;
 import com.manager.model.ProjectRegistration;
 import com.manager.model.User;
+import com.manager.model.WeeklyRequirement;
 import com.manager.repository.ProjectRegistrationRepository;
 import com.manager.repository.ProjectRepository;
 import com.manager.repository.UserRepository;
+import com.manager.repository.WeeklyRequirementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class ProjectService {
@@ -26,6 +26,8 @@ public class ProjectService {
     private UserRepository userRepository;
     @Autowired
     private ProjectRegistrationRepository projectRegistrationRepository;
+    @Autowired
+    private WeeklyRequirementRepository weeklyRequirementRepository;
 
     public List<Project> getAllProjects() {
         return projectRepository.findAllByStatus();
@@ -66,7 +68,14 @@ public class ProjectService {
     }
 
     public void deleteProject(Long id) {
-        projectRepository.deleteByID(id);
+        if (id == null) {
+            throw new IllegalArgumentException("Project ID cannot be null");
+        }
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project with ID " + id + " does not exist!"));
+
+        weeklyRequirementRepository.deleteByProjectId(project.getProjectId());
+        projectRepository.deleteByID(project.getProjectId());
     }
 
     public List<ProjectConfirm> getAllProjectsConfirm(Long id) {
@@ -86,5 +95,31 @@ public class ProjectService {
             projectConfirms.add(custom);
         }
         return projectConfirms;
+    }
+
+    public List<Map<String, String>> calculateWeeks(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy đồ án"));
+
+        List<Map<String, String>> weeks = new ArrayList<>();
+
+        LocalDate startDate = project.getStartDate();
+        LocalDate endDate = project.getEndDate();
+        int weekNumber = 1;
+
+        while (!startDate.isAfter(endDate)) {
+            LocalDate weekEnd = startDate.plusDays(6).isAfter(endDate) ? endDate : startDate.plusDays(6);
+
+            Map<String, String> week = new HashMap<>();
+            week.put("startDate", startDate.toString());
+            week.put("endDate", weekEnd.toString());
+            week.put("weekNumber", String.valueOf(weekNumber));
+
+            weeks.add(week);
+            startDate = weekEnd.plusDays(1);
+            weekNumber++;
+        }
+
+        return weeks;
     }
 }

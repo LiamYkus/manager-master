@@ -16,7 +16,7 @@
         <div class="navbar-top">
             <div class="profile">
                 <div class="info active">
-                    <h2>Welcome back, </h2>
+                    <h2>Chào mừng, </h2>
                     <p class="text-muted"
                        th:text="${authen_user.firstName + ' ' + (authen_user.lastName == null ? '' : authen_user.lastName)}"></p>
                 </div>
@@ -51,13 +51,9 @@
                 <span class="material-symbols-outlined"> grid_view </span>
                 <h3>Đánh giá đồ án</h3>
             </a>
-            <a th:href="@{/lecturer/grade}">
-                <span class="material-symbols-outlined"> grid_view </span>
-                <h3>Bảng điểm</h3>
-            </a>
             <a href="/perform_logout" class="logout">
-                <span class="material-symbols-outlined"> logout </span>
-                <h3>Logout</h3>
+                <span class="material-symbols-outlined"> Logout </span>
+                <h3>Đăng xuất</h3>
             </a>
         </div>
     </aside>
@@ -65,36 +61,51 @@
         <h1 style="margin-bottom: 2rem">Giảng viên</h1>
         <div >
             <h1>Báo cáo theo tuần</h1>
-            <div >
-                <a th:href="@{/lecturer/list_StudentWeeklyReport}"></a>
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button th:each="week : ${weekNumbers}"
+                            class="tab-button"
+                            th:text="'Tuần ' + ${week}"
+                            th:onclick="|openTab(event, 'week${week}')|">
+                    </button>
+                </div>
             </div>
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Đề Tài</th>
-                    <th>Mô tả</th>
-                    <th>Ngày bắt đầu</th>
-                    <th>Ngày kết thúc</th>
-                    <th>Thao tác</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="weeklyRequirement : ${weeklyRequirement}">
-                    <td th:text="${weeklyRequirement.requirementId}"></td>
-                    <td th:text="${weeklyRequirement.project.title}"></td>
-                    <td th:text="${weeklyRequirement.description}"></td>
-                    <td th:text="${#dates.format(weeklyRequirement.startDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${#dates.format(weeklyRequirement.endDate, 'yyyy-MM-dd')}"></td>
-                    <td style="margin-right: 8px; text-align: center">
-                        <a th:href="@{'/lecturer/edit_StudentWeeklyReport?id=' + ${weeklyRequirement.requirementId}}">Sửa</a>
-                        <a th:href="@{'/lecturer/delete?id=' + ${weeklyRequirement.requirementId}}" onclick="return confirm('Bạn có chắc chắn?')">Xóa</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <div th:if="${weeklyRequirement.size() == 0}" >
-                <p >No Weekly Requirements Found</p>
+            <div th:each="week : ${weekNumbers}"
+                 th:id="'week' + ${week}"
+                 class="tab-content"
+                 th:classappend="${week == weekNumbers[0]} ? 'active-content' : ''">
+                <h2 th:text="'Báo cáo tuần ' + ${week}"></h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Đề Tài</th>
+                        <th>Mô tả</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Điểm</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="report,iterStat : ${weeklyRequirement}" th:if="${report.weekNumber == week}">
+                        <td th:text="${iterStat.count}"></td>
+                        <td th:text="${report.project.title}"></td>
+                        <td th:text="${report.description}"></td>
+                        <td th:text="${report.startDate}"></td>
+                        <td th:text="${report.endDate}"></td>
+                        <td th:text="${report.endDate}"></td>
+                        <td >
+                            <a th:href="@{'/lecturer/edit_StudentWeeklyReport?id=' + ${report.requirementId}}">Sửa</a>
+                            <a th:href="@{'/lecturer/delete?id=' + ${report.requirementId}}"
+                               onclick="return confirm('Bạn có chắc chắn?')">Xóa</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:if="${weeklyRequirement.size() == 0}" class="no-data">
+                    <p>Không có báo cáo nào</p>
+                </div>
             </div>
         </div>
         <!--        <div th:unless="${order_set.size() != 0}">No data</div>-->
@@ -112,6 +123,26 @@
             status.style.color = '#fc515f'
         }
     });
+
+    function openTab(evt, tabId) {
+        let i, tabContent, tabButtons;
+
+        // Ẩn tất cả nội dung tab
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+            tabContent[i].classList.remove("active-content");
+        }
+
+        // Xóa trạng thái active khỏi tất cả các nút
+        tabButtons = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
+
+        // Hiển thị nội dung tab đã chọn và thêm class active
+        document.getElementById(tabId).classList.add("active-content");
+        evt.currentTarget.classList.add("active");
+    }
 </script>
 </body>
 </html>

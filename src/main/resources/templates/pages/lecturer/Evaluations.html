@@ -16,7 +16,7 @@
         <div class="navbar-top">
             <div class="profile">
                 <div class="info active">
-                    <h2>Welcome back, </h2>
+                    <h2>Chào mừng, </h2>
                     <p class="text-muted"
                        th:text="${authen_user.firstName + ' ' + (authen_user.lastName == null ? '' : authen_user.lastName)}"></p>
                 </div>
@@ -51,84 +51,84 @@
                 <span class="material-symbols-outlined"> grid_view </span>
                 <h3>Đánh giá đồ án</h3>
             </a>
-            <a th:href="@{/lecturer/grade}">
-                <span class="material-symbols-outlined"> grid_view </span>
-                <h3>Bảng điểm</h3>
-            </a>
             <a href="/perform_logout" class="logout">
-                <span class="material-symbols-outlined"> logout </span>
-                <h3>Logout</h3>
+                <span class="material-symbols-outlined"> Logout </span>
+                <h3>Đăng xuất</h3>
             </a>
         </div>
     </aside>
     <main>
-        <h1 class="main-title">Giảng viên</h1>
-        <div class="reports-section">
-            <h2>Báo cáo theo tuần của sinh viên</h2>
-            <div id="gradingModal" class="modal" style="display: none;">
-                <div class="modal-content">
-                    <span class="close-btn" onclick="closeModal()">&times;</span>
-                    <h3>Chấm Điểm</h3>
-                    <form id="gradingForm" data-report-id="">
-                        <div class="form-group">
-                            <label for="grade">Điểm:</label>
-                            <input type="number" id="grade" name="grade" class="form-control" required min="0" max="10" step="0.01"
-                                   oninput="validateGradeInput(this)">
-                        </div>
-                        <div class="form-group">
-                            <label for="feedback">Nhận xét:</label>
-                            <textarea id="feedback" name="feedback" rows="3" class="form-control" required></textarea>
-                        </div>
-                        <div class="form-buttons">
-                            <button type="submit" class="btn btn-success">Gửi</button>
-                            <button type="button" class="btn btn-secondary" onclick="closeModal()">Hủy</button>
-                        </div>
-                    </form>
-                </div>
+        <div class="report-container">
+            <h1 class="report-title">Báo cáo theo tuần của sinh viên</h1>
+
+            <!-- Tabs -->
+            <div class="report-tabs">
+                <th:block th:each="week : ${weekNumber}">
+                    <button th:class="'report-tab-btn ' + (${week == 1} ? 'active' : '')"
+                            th:onclick="'openReportTab(event, \'week' + ${week} + '\')'">
+                        Tuần [[${week}]]
+                    </button>
+                </th:block>
             </div>
-            <table class="reports-table">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Đề Tài</th>
-                    <th>Yêu cầu</th>
-                    <th>Ngày bắt đầu</th>
-                    <th>Ngày kết thúc</th>
-                    <th>Ngày nộp</th>
-                    <th>Phản hồi</th>
-                    <th>Sinh viên thực hiện</th>
-                    <th>File</th>
-                    <th>Thao tác</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="evaluation : ${evaluations}">
-                    <td th:text="${evaluation.id}"></td>
-                    <td th:text="${evaluation.title}"></td>
-                    <td th:text="${evaluation.request}"></td>
-                    <td th:text="${#dates.format(evaluation.startDate, 'dd-MM-yyyy')}"></td>
-                    <td th:text="${#dates.format(evaluation.endDate, 'dd-MM-yyyy')}"></td>
-                    <td th:text="${evaluation.subDate}"></td>
-                    <td th:text="${evaluation.comments}"></td>
-                    <td th:text="${evaluation.firstName + ' ' + evaluation.lastName}"></td>
-                    <td>
-                        <a th:href="@{'/lecturer/reports/download/' + ${evaluation.file}}" class="download-link">Tải xuống</a>
-                    </td>
-                    <td>
-                        <button class="btn btn-warning" onclick="openGradingModal(this)"
-                                th:data-report-id="${evaluation.id}">
-                            Chấm điểm
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <div th:if="${evaluations.size() == 0}" class="no-data">
-                <p>Không có yêu cầu báo cáo nào</p>
+
+            <!-- Nội dung Tab -->
+            <th:block th:each="week : ${weekNumber}">
+                <div th:id="'week' + ${week}" class="report-tab-content" th:classappend="${week == 1} ? 'active'">
+                    <h2>Báo cáo Tuần [[${week}]]</h2>
+                    <table class="report-table">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Đề Tài</th>
+                            <th>Ngày Nộp</th>
+                            <th>Nhận Xét</th>
+                            <th>Sinh Viên</th>
+                            <th>File</th>
+                            <th>Điểm</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="evaluation, iterStat : ${evaluations}" th:if="${evaluation.week_number == week}">
+                            <td th:text="${iterStat.count}"></td>
+                            <td th:text="${evaluation.title}"></td>
+                            <td th:text="${#dates.format(evaluation.subDate, 'dd-MM-yyyy')}"></td>
+                            <td th:text="${evaluation.comments}"></td>
+                            <td th:text="${evaluation.firstName + ' ' + evaluation.lastName}"></td>
+                            <td>
+                                <a th:href="@{'/lecturer/reports/download/' + ${evaluation.file}}">Tải xuống</a>
+                            </td>
+                            <td th:text="${evaluation.weekly_report_grade != null ? evaluation.weekly_report_grade : 'Chưa chấm'}"></td>
+                            <td th:if="${evaluation.weekly_report_grade == null}">
+                                <button onclick="openGradingModal(this)" th:data-report-id="${evaluation.id}" class="report-btn-primary">Chấm điểm</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </th:block>
+        </div>
+
+        <!-- Modal for Grading -->
+        <div id="gradingModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <h3>Chấm Điểm</h3>
+                <form id="gradingForm" data-report-id="">
+                    <div>
+                        <label for="grade">Điểm:</label>
+                        <input type="number" id="grade" name="grade" required min="0" max="10" step="0.1">
+                    </div>
+                    <div>
+                        <label for="feedback">Nhận xét:</label>
+                        <textarea id="feedback" name="feedback" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Gửi</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+                </form>
             </div>
         </div>
     </main>
-
 </div>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
@@ -142,33 +142,32 @@
             status.style.color = '#fc515f'
         }
     });
-
-    function validateGradeInput(input) {
-        const min = 0;
-        const max = 10;
-
-        // If the input is out of range, set it to the closest valid value
-        if (input.value < min) input.value = min;
-        if (input.value > max) input.value = max;
+    function openReportTab(evt, tabId) {
+        // Ẩn tất cả nội dung tab
+        document.querySelectorAll('.report-tab-content').forEach(tab => tab.classList.remove('active'));
+        // Bỏ class active khỏi tất cả các button
+        document.querySelectorAll('.report-tab-btn').forEach(btn => btn.classList.remove('active'));
+        // Hiển thị tab được chọn và thêm class active
+        document.getElementById(tabId).classList.add('active');
+        evt.currentTarget.classList.add('active');
     }
 
+    // Kích hoạt tab mặc định
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector('.report-tab-btn').click();
+    });
+
     function openGradingModal(button) {
-        const reportId = button.dataset.reportId; // Lấy reportId từ data attribute
-        const modal = document.getElementById('gradingModal');
-
-        // Gán reportId vào form
-        document.getElementById('gradingForm').dataset.reportId = reportId;
-
-        // Hiển thị modal
-        modal.style.display = 'block';
+        const reportId = button.getAttribute("data-report-id");
+        const modal = document.getElementById("gradingModal");
+        document.getElementById("gradingForm").dataset.reportId = reportId;
+        modal.style.display = "block";
     }
 
     function closeModal() {
-        const modal = document.getElementById('gradingModal');
-        modal.style.display = 'none';
+        document.getElementById("gradingModal").style.display = "none";
     }
 
-    // Xử lý Submit Form
     document.getElementById('gradingForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -183,22 +182,20 @@
         })
             .then(response => response.text())
             .then(data => {
-                alert(data); // Thông báo kết quả
+                alert('Chấm điểm thành công!');
                 closeModal();
+                window.location.reload();
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Có lỗi xảy ra khi gửi dữ liệu');
+                alert('Lỗi khi chấm điểm.');
             });
     });
 
-    // Đóng modal khi nhấn ngoài vùng modal
-    window.onclick = function(event) {
-        const modal = document.getElementById('gradingModal');
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    }
+    // Default tab open
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector('.tab-button').click();
+    });
 </script>
 </body>
 </html>

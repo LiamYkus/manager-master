@@ -13,48 +13,7 @@
 </head>
 <body>
 <input type="checkbox" id="nav-toggle">
-<div class="sidebar">
-    <div class="sidebar-brand">
-        <h2><span class="lab la-accusoft"></span><span>Manager</span></h2>
-    </div>
-
-    <div class="sidebar-menu">
-        <ul>
-            <li>
-                <a href="/admin"><span class="las la-igloo"></span>
-                    <span>Dashboard</span></a>
-            </li>
-            <li>
-                <a href="/admin/create-account"><span class="las la-users"></span>
-                    <span>Thêm tài khoản</span></a>
-            </li>
-            <li>
-                <a href="/admin/view-account"><span class="las la-user-circle"></span>
-                    <span>Danh sách tài khoản</span></a>
-            </li>
-            <li>
-                <a href="/admin/Project/create-project"><span class="las la-user-astronaut"></span>
-                    <span>Thêm đồ án</span></a>
-            </li>
-            <li>
-                <a href="/admin/Project/view-project"><span class="las la-shopping-bag"></span>
-                    <span>Danh sách đồ án</span></a>
-            </li>
-            <li>
-                <a href="/admin/Assignment/view-assignment"><span class="las la-user-tag"></span>
-                    <span>Danh sách phân công</span></a>
-            </li>
-            <li>
-                <a href="/admin/Assignment/create-assignment"><span class="las la-user-tag"></span>
-                    <span>Phân công</span></a>
-            </li>
-            <li>
-                <a href="/perform_logout"><span class="las la-sign-out-alt"></span>
-                    <span>Sign Out</span></a>
-            </li>
-        </ul>
-    </div>
-</div>
+<div th:replace="/fragments/admin/sidebar :: sidebar"></div>
 
 <div class="main-content">
     <header>

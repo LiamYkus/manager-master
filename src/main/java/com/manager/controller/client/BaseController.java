@@ -34,7 +34,7 @@ public class BaseController {
 
     @GetMapping("/")
     public String index(Model model) {
-        return "pages/client/home";
+        return "pages/client/home_main";
     }
 
     @GetMapping("/home")

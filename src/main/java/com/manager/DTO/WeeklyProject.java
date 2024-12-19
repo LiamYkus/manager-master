@@ -18,8 +18,28 @@ public class WeeklyProject {
     private Long projectId;
 
     private String title;
+    private Integer weekNumber;
 
     public WeeklyProject() {
+    }
+
+    public WeeklyProject(Long requirementId, String description, Date startDate, Date endDate, Long projectId, Integer weekNumber, String title) {
+        this.requirementId = requirementId;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.projectId = projectId;
+        this.weekNumber = weekNumber;
+        this.title = title;
+    }
+
+
+    public Integer getWeekNumber() {
+        return weekNumber;
+    }
+
+    public void setWeekNumber(Integer weekNumber) {
+        this.weekNumber = weekNumber;
     }
 
     public Long getRequirementId() {
@@ -67,15 +87,6 @@ public class WeeklyProject {
     }
 
     public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public WeeklyProject(Long requirementId, String description, Date startDate, Date endDate, Long projectId, String title) {
-        this.requirementId = requirementId;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.projectId = projectId;
         this.title = title;
     }
 }

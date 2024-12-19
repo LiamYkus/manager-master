@@ -79,7 +79,7 @@ public class CustomerInfomationController {
             }
         }
         model.addAttribute("user", user);
-        return "pages/client/Profile";
+        return "pages/client/Profiles";
     }
 
     @PostMapping("/user/account/profile")
@@ -87,7 +87,8 @@ public class CustomerInfomationController {
                                 @RequestParam(name = "telephone") String phone, @RequestParam(name = "email") String email, @RequestParam(name = "gender-radio") String gender,
                                 @RequestParam(name = "day") String day, @RequestParam(name = "month") String month, @RequestParam(name = "year") String year,
                                 @RequestParam(name = "current_password") String oldPass, @RequestParam(name = "password") String newPass, @RequestParam(name = "confirmation") String confirm,
-                                @RequestParam(name = "change_password") Optional<String> check
+                                @RequestParam(name = "change_password") Optional<String> check, @RequestParam(name = "department") String department, @RequestParam(name = "code") String code,
+                                @RequestParam(name = "className") String className
             , HttpServletRequest request, HttpServletResponse response, Model model) {
         User user = userRepository.findById(id).get();
         String date_String = year + "-" + day + "-" + month;
@@ -119,6 +120,9 @@ public class CustomerInfomationController {
         } catch (Exception ex) {
 
         }
+        user.setClassName(className);
+        user.setCode(code);
+        user.setDepartment(department);
         user.setFirstName(firstname);
         user.setLastName(lastname);
         user.setPhoneNumber(phone);
@@ -163,20 +167,7 @@ public class CustomerInfomationController {
         Project p = projectService.getAllProjectsByStatus(u.getId());
         model.addAttribute("projects", p);
         model.addAttribute("weeklyRequirements", weeklyRequirement);
-        return "pages/client/WeeklyRequirements";
-    }
-
-    @GetMapping("/user/evaluation")
-    public String getStudentEvaluations(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        User u = userRepository.findByEmail(email);
-        if (u == null) {
-            return "redirect:/login";
-        }
-        List<GradeStudent> evaluations = evaluationService.getAllGradeProject(u.getId());
-        model.addAttribute("evaluations", evaluations);
-        return "pages/client/Evaluations";
+        return "pages/client/WeeklyRequirement";
     }
 
     @PostMapping("/user/account/submit_report")

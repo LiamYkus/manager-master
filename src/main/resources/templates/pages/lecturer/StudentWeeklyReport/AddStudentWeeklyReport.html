@@ -4,7 +4,7 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Teacher Dashboard</title>
+    <title>Giảng viên</title>
     <link rel="stylesheet" th:href="@{/css/lecturer/style.css}"/>
     <!-- Favicon -->
     <link href="img/icons8-admin-settings-male-16.png" rel="icon"/>
@@ -16,7 +16,7 @@
         <div class="navbar-top">
             <div class="profile">
                 <div class="info active">
-                    <h2>Welcome back, </h2>
+                    <h2>Chào mừng, </h2>
                     <p class="text-muted"
                        th:text="${authen_user.firstName + ' ' + (authen_user.lastName == null ? '' : authen_user.lastName)}"></p>
                 </div>
@@ -51,54 +51,35 @@
                 <span class="material-symbols-outlined"> grid_view </span>
                 <h3>Đánh giá đồ án</h3>
             </a>
-            <a th:href="@{/lecturer/grade}">
-                <span class="material-symbols-outlined"> grid_view </span>
-                <h3>Bảng điểm</h3>
-            </a>
             <a href="/perform_logout" class="logout">
-                <span class="material-symbols-outlined"> logout </span>
-                <h3>Logout</h3>
+                <span class="material-symbols-outlined">Logout </span>
+                <h3>Đăng xuất</h3>
             </a>
         </div>
     </aside>
     <main>
         <div class="main-form-container">
             <!-- Title -->
-            <h1>Create Weekly Report</h1>
+            <h1>Tạo báo cáo cho sinh viên</h1>
 
             <!-- Form -->
-            <form th:action="@{/lecturer/create_StudentWeeklyReport}" th:object="${weeklyRequirement}" method="post">
+            <form th:action="@{/lecturer/create-weekly-reports}" method="post">
                 <!-- Project Selection -->
                 <div class="mb-4">
-                    <label for="project" class="form-label">Project</label>
-                    <select class="form-select" id="project" name="project" required>
-                        <option value="" disabled selected>Select a project</option>
+                    <label for="project" class="form-label">Tên đồ án</label>
+                    <select class="form-select" id="project" name="projectId" onchange="fetchWeeks()" required>
+                        <option value="" disabled selected>-- Chọn đồ án --</option>
                         <th:block th:each="c : ${projects}">
                             <option th:value="${c.projectId}" th:text="${c.getTitle()}"></option>
                         </th:block>
                     </select>
                 </div>
-
-                <!-- Description -->
-                <div class="mb-4">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" th:field="*{description}" required></textarea>
-                </div>
-
-                <!-- Dates Row -->
                 <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label for="startDate" class="form-label">Start Date</label>
-                        <input type="date" class="form-control" id="startDate" name="startDate" th:field="*{startDate}" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="endDate" class="form-label">End Date</label>
-                        <input type="date" class="form-control" id="endDate" name="endDate" th:field="*{endDate}" required>
+                    <div id="weeklyRequirementsContainer">
                     </div>
                 </div>
 
-                <!-- Submit Button -->
-                <button type="submit">Create Weekly Report</button>
+                <button type="submit">Tạo báo cáo</button>
             </form>
         </div>
     </main>
@@ -119,6 +100,32 @@
             status.style.color = '#fc515f'
         }
     });
+
+    function fetchWeeks() {
+        const projectId = document.getElementById("project").value;
+        if (!projectId) return;
+
+        fetch(`/lecturer/get-weeks?projectId=${projectId}`)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById("weeklyRequirementsContainer");
+                container.innerHTML = ""; // Xóa nội dung cũ
+
+                data.forEach((week, index) => {
+                    container.innerHTML += `
+                           <div class="week-container">
+                        <h3>Tuần ${index + 1} (${week.startDate} - ${week.endDate})</h3>
+                        <label for="description${index}">Yêu cầu:</label>
+                        <textarea id="description${index}" name="weeklyRequirements[${index}].description" required></textarea>
+                        <input type="hidden" name="weeklyRequirements[${index}].startDate" value="${week.startDate}">
+                        <input type="hidden" name="weeklyRequirements[${index}].endDate" value="${week.endDate}">
+                        <input type="hidden" name="weeklyRequirements[${index}].weekNumber" value="${index + 1}">
+                    </div>
+                        `;
+                });
+            })
+            .catch(error => console.error("Error fetching weeks:", error));
+    }
 </script>
 </body>
 </html>

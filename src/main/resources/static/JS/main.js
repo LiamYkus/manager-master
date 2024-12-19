@@ -154,7 +154,7 @@ $.ready(tabslider("mglnv", true))
 
 function checkLogin(i) {
     if (i != null) {
-        window.location.href = "/user/account/profile";
+        window.location.href = "/user/account/profile.css";
     } else {
         window.location.href = "/login"
     }

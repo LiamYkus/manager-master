@@ -16,7 +16,7 @@
         <div class="navbar-top">
             <div class="profile">
                 <div class="info active">
-                    <h2>Welcome back, </h2>
+                    <h2>Chào mừng, </h2>
                     <p class="text-muted"
                        th:text="${authen_user.firstName + ' ' + (authen_user.lastName == null ? '' : authen_user.lastName)}"></p>
                 </div>
@@ -51,13 +51,9 @@
                 <span class="material-symbols-outlined"> grid_view </span>
                 <h3>Đánh giá đồ án</h3>
             </a>
-            <a th:href="@{/lecturer/grade}">
-                <span class="material-symbols-outlined"> grid_view </span>
-                <h3>Bảng điểm</h3>
-            </a>
             <a href="/perform_logout" class="logout">
-                <span class="material-symbols-outlined"> logout </span>
-                <h3>Logout</h3>
+                <span class="material-symbols-outlined"> Logout </span>
+                <h3>Đăng xuất</h3>
             </a>
         </div>
     </aside>
@@ -68,7 +64,7 @@
             <table class="reports-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>STT</th>
                     <th>Đề Tài</th>
                     <th>Yêu cầu</th>
                     <th>Ngày bắt đầu</th>

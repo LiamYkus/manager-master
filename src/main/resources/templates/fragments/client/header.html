@@ -7,33 +7,6 @@
                      th:onmouseout="|open_noti(0,'.catalog_menu_dropdown')|"
                      class="fhs_center_right fhs_mouse_point fhs_dropdown_hover fhs_dropdown_click"
                      style="cursor: pointer;">
-                    <span class="icon_menu"></span>
-                    <span class="icon_seemore"></span>
-                    <div class="catalog_menu_dropdown fhs_dropdown" style="display: none;">
-                        <div class="fhs_stretch_stretch">
-                            <div>
-                                <div
-                                        style="font-weight: bold;font-size: 1.7em;color: #7A7E7F; text-align: left;padding: 0 12px;margin-bottom: 16px;">
-                                    Danh mục sản phẩm
-                                </div>
-                                <ul class="nav navbar-nav verticalmenu" th:each="cate : ${session.list_cate}">
-<!--                                    <li class="parent dropdown aligned-left"-->
-<!--                                        th:onmouseover="|showCategory(${cate.id})|"><span-->
-<!--                                            class="open-child hidden-md hidden-lg">(open)</span><a-->
-<!--                                            th:href="@{category(id=${cate.id})}" class=""-->
-<!--                                            th:title="${cate.categoryName}" data-clickable="1"><i-->
-<!--                                            class="ico_sachtrongnuoc"></i><span class="menu-title"-->
-<!--                                                                                th:text="${cate.categoryName}">-->
-<!--                                    </span>-->
-<!--                                    <b class="caret"></b></a>-->
-<!--                                    </li>-->
-                                </ul>
-                            </div>
-                            <div></div>
-                            <div class="fhs_column_stretch" style="padding-right: 12px;height: 600px">
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="fhs_center_left">
                     <div class="box search_box">
@@ -140,28 +113,6 @@
                                     </a>
                                 </div>
                                 <div class="top-notification-footer" style="height: 16px"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="cart-top no_cover fhs_dropdown_hover">
-                        <div class="fhs_top_cart">
-                            <a href="/user/cart">
-                                <div class="heading heading-custom">
-                                    <div class="fhs_center_center" style="margin-bottom: 3px;">
-                                        <div class="icon_cart_gray">
-<!--                                            <div sec:authorize="isAuthenticated()" th:if="${authen_user.cart.cartDetails.size() > 0}" class="top_menu_unseen fhs_center_center" style="visibility: visible;">-->
-<!--                                                <span  th:text="${authen_user.cart.cartDetails.size()}" style="visibility: visible;" class="cartmini_qty"></span>-->
-<!--                                            </div>-->
-                                        </div>
-                                    </div>
-                                    <div class="top-cart-button-label fhs_top_center">
-                                        <div class="top_menu_label">Giỏ Hàng</div>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <div id="cartmini_page_content" class="fhs_top_cart_dropdown fhs_dropdown center"
-                                 style="visibility: hidden; display: none;">
                             </div>
                         </div>
                     </div>

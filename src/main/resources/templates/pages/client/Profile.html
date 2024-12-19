@@ -266,6 +266,39 @@
                                                 </div>
                                                 <div class="fhs-input-alert"></div>
                                             </div>
+                                            <div class="fhs-input-box fhs-input-group-horizontal-account fhs-input-send">
+                                                <label>Mã sinh viên*</label>
+                                                <div class="fhs-input-item">
+                                                    <div class="fhs-input-group">
+                                                        <input class="fhs-textbox" type="text" id="code"
+                                                               name="code" maxlength="11" minlength="10"
+                                                               th:value="${user?.code}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="fhs-input-alert"></div>
+                                            </div>
+                                            <div class="fhs-input-box fhs-input-group-horizontal-account fhs-input-send">
+                                                <label>Lớp*</label>
+                                                <div class="fhs-input-item">
+                                                    <div class="fhs-input-group">
+                                                        <input class="fhs-textbox" type="text" id="className"
+                                                               name="className" maxlength="11" minlength="10"
+                                                               th:value="${user?.className}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="fhs-input-alert"></div>
+                                            </div>
+                                            <div class="fhs-input-box fhs-input-group-horizontal-account fhs-input-send">
+                                                <label>Khoa*</label>
+                                                <div class="fhs-input-item">
+                                                    <div class="fhs-input-group">
+                                                        <input class="fhs-textbox" type="text" id="department"
+                                                               name="department"
+                                                               th:value="${user?.department}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="fhs-input-alert"></div>
+                                            </div>
                                             <div class="account-row" style="margin-top: 10px;">
                                                 <label class="account-title"></label>
                                                 <div class="account-input">

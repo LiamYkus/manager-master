@@ -1,5 +1,6 @@
 package com.manager.DTO;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class EvaluationDTO {
@@ -14,11 +15,13 @@ public class EvaluationDTO {
     private Date endDate;
     private String title;
     private String file;
+    private Double weekly_report_grade;
+    private Integer week_number;
 
     public EvaluationDTO() {
     }
 
-    public EvaluationDTO(Long id, String comments, Date subDate, String firstName, String lastName, String request, Date startDate, Date endDate, String title, String file) {
+    public EvaluationDTO(Long id, String comments, Date subDate, String firstName, String lastName, String request, Date startDate, Date endDate, String title, String file, Double weekly_report_grade, Integer week_number) {
         this.id = id;
         this.comments = comments;
         this.subDate = subDate;
@@ -29,6 +32,8 @@ public class EvaluationDTO {
         this.endDate = endDate;
         this.title = title;
         this.file = file;
+        this.weekly_report_grade = weekly_report_grade;
+        this.week_number = week_number;
     }
 
     public Long getId() {
@@ -109,5 +114,21 @@ public class EvaluationDTO {
 
     public void setFile(String file) {
         this.file = file;
+    }
+
+    public Double getWeekly_report_grade() {
+        return weekly_report_grade;
+    }
+
+    public void setWeekly_report_grade(Double weekly_report_grade) {
+        this.weekly_report_grade = weekly_report_grade;
+    }
+
+    public Integer getWeek_number() {
+        return week_number;
+    }
+
+    public void setWeek_number(Integer week_number) {
+        this.week_number = week_number;
     }
 }

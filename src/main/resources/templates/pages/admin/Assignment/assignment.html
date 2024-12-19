@@ -13,49 +13,7 @@
 </head>
 <body>
 <input type="checkbox" id="nav-toggle">
-<div class="sidebar">
-    <div class="sidebar-brand" style="margin-bottom: 30px">
-        <img style="width: 282px; height: 60px; object-fit: cover; border-radius: 8px"
-             src="https://phuongnamvina.com/img_data/images/logo-truong.jpg">
-    </div>
-
-    <div class="sidebar-menu">
-        <ul>
-            <li>
-                <a href="/admin"><span class="las la-igloo"></span>
-                    <span>Trang chủ</span></a>
-            </li>
-            <li>
-                <a href="/admin/create-account"><span class="las la-users"></span>
-                    <span>Thêm tài khoản</span></a>
-            </li>
-            <li>
-                <a href="/admin/view-account"><span class="las la-user-circle"></span>
-                    <span>Danh sách tài khoản</span></a>
-            </li>
-            <li>
-                <a href="/admin/Project/create-project"><span class="las la-user-astronaut"></span>
-                    <span>Thêm đồ án</span></a>
-            </li>
-            <li>
-                <a href="/admin/Project/view-project"><span class="las la-shopping-bag"></span>
-                    <span>Danh sách đồ án</span></a>
-            </li>
-            <li>
-                <a href="/admin/Assignment/view-assignment"><span class="las la-user-tag"></span>
-                    <span>Danh sách phân công</span></a>
-            </li>
-            <li>
-                <a href="/admin/Assignment/create-assignment" class="active"><span class="las la-user-tag"></span>
-                    <span>Phân công</span></a>
-            </li>
-            <li>
-                <a href="/perform_logout"><span class="las la-sign-out-alt"></span>
-                    <span>Đăng xuất</span></a>
-            </li>
-        </ul>
-    </div>
-</div>
+<div th:replace="/fragments/admin/sidebar :: sidebar"></div>
 
 <div class="main-content">
     <header>
@@ -63,10 +21,8 @@
             <label for="nav-toggle">
                 <span class="las la-bars"></span>
             </label>
-            Dashboard
+            Trang chủ
         </h2>
-
-
         <div class="user-wrapper">
             <img src="/image/ico_account_gray.png" width="24px" height="24px" alt="">
             <div>
@@ -77,49 +33,47 @@
     </header>
 
     <main>
-        <div class="container">
-            <form th:action="@{/admin/Assignment/create-assignment}"
-                  th:object="${assignment}"
-                  method="POST"
-                  enctype="multipart/form-data">
-                <span class="title" th:text="'Phân công'"></span>
-                <div class="form first">
-                    <div class="details personal">
-                        <div class="fields">
+        <div class="main-assignment">
+            <div class="assignment-container">
+                <form th:action="@{/admin/Assignment/create-assignment}"
+                      th:object="${assignment}"
+                      method="POST"
+                      enctype="multipart/form-data">
+                    <span class="assignment-title" th:text="'Phân công'"></span>
+                    <div class="assignment-fields">
 
-                            <div class="input-field">
-                                <label>Giảng viên phụ trách</label>
-                                <select class="form-control" id="lecturer" name="lecturer" required>
+                        <div class="assignment-input">
+                            <label>Giảng viên phụ trách</label>
+                            <select id="lecturer" name="lecturer" required>
                                 <th:block th:each="c : ${lecturer}">
-                                    <option th:value="${c.id}" th:text="${c.getFirstName()}">
-                                    </option>
+                                    <option th:value="${c.id}" th:text="${c.getFirstName()}"></option>
                                 </th:block>
                             </select>
-                            </div>
+                        </div>
 
-                            <div class="input-field">
-                                <label for="projects">Tên đồ án</label> <select class="form-control"
-                                                                                 id="projects"
-                                                                                 name="projects" required>
+                        <div class="assignment-input">
+                            <label for="projects">Tên đồ án</label>
+                            <select id="projects" name="projects" required>
                                 <th:block th:each="c : ${projects}">
-                                    <option th:value="${c.projectId}" th:text="${c.getTitle()}">
-                                    </option>
+                                    <option th:value="${c.projectId}" th:text="${c.getTitle()}"></option>
                                 </th:block>
                             </select>
-                            </div>
                         </div>
                     </div>
 
-                    <div class="details ID">
-                        <button type="submit" class="nextBtn">
+                    <div class="assignment-button">
+                        <button type="submit">
                             <span class="btnText">Lưu</span>
-                            <i class="uil uil-navigator"></i>
                         </button>
+                    </div>
+
+                    <div class="assignment-success">
                         <img th:if="${success}" src="/image/success.png">
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
+
     </main>
 </div>
 <script>

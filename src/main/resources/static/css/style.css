@@ -258,14 +258,14 @@ textarea {
 }
 
 .icon_menu {
-    background: url("/image/ico_menu.png") no-repeat center center;
+    background: url("/static/image/ico_menu.png") no-repeat center center;
     background-size: contain;
     width: 36px;
     height: 36px;
 }
 
 .icon_seemore {
-    background: url("/image/icon_seemore_gray.png") no-repeat center center;
+    background: url("/static/image/icon_seemore_gray.png") no-repeat center center;
     background-size: contain;
     width: 16px;
     height: 16px;
@@ -375,7 +375,7 @@ textarea {
 }
 
 .fhs-header-top-second-bar > div:nth-of-type(4) {
-    width: 320px;
+    width: 170px;
 }
 
 .fhs_center_space {
@@ -535,7 +535,7 @@ textarea {
 }
 
 .ico_notlogin {
-    background: url("/image/ico_notlogin.png") no-repeat center center;
+    background: url("/static/image/ico_notlogin.png") no-repeat center center;
     background-size: contain;
     height: 80px;
     width: 80px;
@@ -555,7 +555,7 @@ textarea {
 }
 
 .icon_cart_gray {
-    background: url("/image/ico_cart_gray.png") no-repeat center center;
+    background: url("/static/image/ico_cart_gray.png") no-repeat center center;
     background-size: contain;
     height: 24px;
     width: 24px;
@@ -595,6 +595,14 @@ textarea {
 
 .icon_account_gray {
     background: url("/image/ico_account_gray.png") no-repeat center center;
+    background-size: contain;
+    height: 24px;
+    width: 24px;
+    position: relative;
+}
+
+.icon_account_gray1 {
+    background: url("/image/emergency-exit_7261981.png") no-repeat center center;
     background-size: contain;
     height: 24px;
     width: 24px;
@@ -802,7 +810,7 @@ strong {
 }
 
 .ico_sachtrongnuoc {
-    background: url("/image/ico_sachtrongnuoc.png") no-repeat center center;
+    background: url("/static/image/ico_sachtrongnuoc.png") no-repeat center center;
     background-size: contain;
     height: 24px;
     width: 24px;
@@ -921,7 +929,7 @@ strong {
 }
 
 .ico_arrow_gray {
-    background: url("/image/ico_arrow_gray.png") no-repeat center center;
+    background: url("/static/image/ico_arrow_gray.png") no-repeat center center;
     background-size: contain;
     height: 14.4px;
     width: 14.4px;
@@ -1104,7 +1112,7 @@ strong {
 }
 
 .ico_menu_red {
-    background: url("/image/ico_menu_red.png") no-repeat center center;
+    background: url("/static/image/ico_menu_red.png") no-repeat center center;
     background-size: contain;
     height: 32px;
     width: 32px;
@@ -1536,7 +1544,7 @@ h2 {
 }
 
 .rating-box {
-    background: url("/image/ico_star_gray.png") repeat-x;
+    background: url("/static/image/ico_star_gray.png") repeat-x;
     background-size: 16px 16px;
     margin: 0px 0px 0px 10px;
     position: relative;
@@ -1549,7 +1557,7 @@ h2 {
 }
 
 .rating-box .rating {
-    background: url("/image/ico_star_yellow.png") repeat-x;
+    background: url("/static/image/ico_star_yellow.png") repeat-x;
     background-size: 16px 16px;
     height: 16px;
     left: 0;
@@ -2407,7 +2415,7 @@ div.footer-static .container {
 .footer-static-content ul li a {
     line-height: 35px;
     padding-left: 10px;
-    background: url("/image/icon-footer.png") no-repeat 0 9px;
+    background: url("/static/image/icon-footer.png") no-repeat 0 9px;
     color: black;
 }
 
@@ -2441,4 +2449,8 @@ div.footer-static .container {
     border: 2px solid #C92127;
     padding: 5px 20px;
     margin-top: 10px;
+}
+#innercontent {
+    float: left;
+    width:100%
 }

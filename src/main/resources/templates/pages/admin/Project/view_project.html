@@ -8,54 +8,12 @@
     <title>Danh sách đồ án</title>
     <link rel="stylesheet"
           href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
-    <link rel="stylesheet" th:href="@{/css/admin/view_account.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/view_project.css}">
     <link rel="icon" href="/image/p.png" type="image/x-icon">
 </head>
 <body>
 <input type="checkbox" id="nav-toggle">
-<div class="sidebar">
-    <div class="sidebar-brand" style="margin-bottom: 30px">
-        <img style="width: 282px; height: 60px; object-fit: cover; border-radius: 8px"
-             src="https://phuongnamvina.com/img_data/images/logo-truong.jpg">
-    </div>
-
-    <div class="sidebar-menu">
-        <ul>
-            <li>
-                <a href="/admin"><span class="las la-igloo"></span>
-                    <span>Trang chủ</span></a>
-            </li>
-            <li>
-                <a href="/admin/create-account"><span class="las la-users"></span>
-                    <span>Thêm tài khoản</span></a>
-            </li>
-            <li>
-                <a href="/admin/view-account"><span class="las la-user-circle"></span>
-                    <span>Danh sách tài khoản</span></a>
-            </li>
-            <li>
-                <a href="/admin/Project/create-project"><span class="las la-user-astronaut"></span>
-                    <span>Thêm đồ án</span></a>
-            </li>
-            <li>
-                <a href="/admin/Project/view-project" class="active"><span class="las la-shopping-bag"></span>
-                    <span>Danh sách đồ án</span></a>
-            </li>
-            <li>
-                <a href="/admin/Assignment/view-assignment"><span class="las la-user-tag"></span>
-                    <span>Danh sách phân công</span></a>
-            </li>
-            <li>
-                <a href="/admin/Assignment/create-assignment"><span class="las la-user-tag"></span>
-                    <span>Phân công</span></a>
-            </li>
-            <li>
-                <a href="/perform_logout"><span class="las la-sign-out-alt"></span>
-                    <span>Đăng xuất</span></a>
-            </li>
-        </ul>
-    </div>
-</div>
+<div th:replace="/fragments/admin/sidebar :: sidebar"></div>
 
 <div class="main-content">
     <header>
@@ -76,66 +34,102 @@
         </div>
     </header>
 
-    <main>
-        <div class="container">
-            <div class="form first" style="margin-left: 90px">
-                <div class="details personal">
-                    <div class="container-header">
-                        <form id="frm" action="/admin/Project/view-project" method="get">
-                            <div class="search-wrapper">
-                                <span class="las la-search"></span>
-                                <input type="search" th:value="${email}" name="email" placeholder="Search here">
-                            </div>
-                            <div class="dropdown-role" style="float: right">
-                                <select name="role-id" class="dropdown-box" onchange="changeRole()">
-                                    <option class="option" value="0">All</option>
-                                    <option th:each="role: ${roles}" th:if="${id == role.id}" selected
-                                            th:text="${role.roleName}" class="option" th:value="${role.id}"></option>
-                                    <option th:each="role: ${roles}" th:if="${!(id == role.id)}"
-                                            th:text="${role.roleName}" class="option" th:value="${role.id}"></option>
-
-                                </select>
-                            </div>
-                        </form>
+    <main class="main-container">
+        <div class="form-container">
+            <div class="container-header">
+                <form id="frm" action="/admin/Project/view-project" method="get">
+                    <div class="search-wrapper">
+                        <span class="las la-search"></span>
+                        <input type="search" th:value="${email}" name="email" placeholder="Search here">
                     </div>
+                </form>
+                <div class="dropdown-role">
+                    <select name="role-id" onchange="changeRole()">
+                        <option value="0">All</option>
+                        <option th:each="role : ${roles}" th:text="${role.roleName}" th:value="${role.id}"></option>
+                    </select>
                 </div>
-                <div class="list-accounts">
-                    <table width="100%">
-                        <thead>
-                        <tr>
-                            <th style="margin-right: 8px; text-align: center">ID</th>
-                            <th style="margin-right: 8px; text-align: center">Tiêu đề</th>
-                            <th style="margin-right: 8px; text-align: center">Phòng ban</th>
-                            <th style="margin-right: 8px; text-align: center">Ngày bắt đầu</th>
-                            <th style="margin-right: 8px; text-align: center">Ngày kết thúc</th>
-                            <th style="margin-right: 8px; text-align: center">Trạng thái</th>
-                            <th style="margin-right: 8px; text-align: center">Tên file</th>
-                            <th style="margin-right: 8px; text-align: center">File</th>
-                            <th style="margin-right: 8px; text-align: center">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="project : ${projects}">
-                            <td style="margin-right: 8px; text-align: center" th:text="${project.projectId}"></td>
-                            <td style="margin-right: 8px; text-align: center" th:text="${project.title}"></td>
-                            <td style="margin-right: 8px; text-align: center" th:text="${project.department}"></td>
-                            <td style="margin-right: 8px; text-align: center" th:text="${project.startDate}"></td>
-                            <td style="margin-right: 8px; text-align: center" th:text="${project.endDate}"></td>
-                            <td style="margin-right: 8px; text-align: center" th:text="${project.status}"></td>
-                            <td style="margin-right: 8px; text-align: center" th:text="${project.file}"></td>
-                            <td style="margin-right: 8px; text-align: center">
-                                <a th:href="@{'/uploads/' + ${project.file}}" target="_blank" th:if="${project.file != null}">
-                                    Tải file
-                                </a>
-                            </td>
-                            <td style="margin-right: 8px; text-align: center">
-                                <a th:href="@{'/admin/Project/edit?id=' + ${project.projectId}}">Sửa</a>
-                                <a th:href="@{'/admin/Project/delete?id=' + ${project.projectId}}" onclick="return confirm('Bạn có chắc chắn?')">Xóa</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+            </div>
+            <div class="list-accounts">
+                <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+                    <a href="/admin/Project/create-project" class="btn btn-add" style="background-color: #197a35; color: #fff; padding: 8px 12px; border-radius: 5px; text-decoration: none;">
+                        + Thêm đồ án
+                    </a>
                 </div>
+                <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+                    <a href="/admin/Assignment/create-assignment" class="btn btn-add" style="background-color: #197a35; color: #fff; padding: 8px 12px; border-radius: 5px; text-decoration: none;">
+                        Phân công
+                    </a>
+                </div>
+
+                <!-- Popup Modal -->
+<!--                <div id="modal" class="modal">-->
+<!--                    <div class="modal-content">-->
+<!--                        <span class="close" id="closeModalBtn">&times;</span>-->
+<!--                        <h2>Thêm đồ án</h2>-->
+<!--                        <form id="projectForm" method="post" enctype="multipart/form-data"-->
+<!--                              th:action="@{/admin/Project/create-project}">-->
+
+<!--                            <label for="title" style="color: #0D0E0F">Tên đồ án</label>-->
+<!--                            <input type="text" id="title" name="title" placeholder="Nhập tên đồ án" required>-->
+
+<!--                            <label for="startDate" style="color: #0D0E0F">Ngày bắt đầu</label>-->
+<!--                            <input type="date" id="startDate" name="startDate" required>-->
+
+<!--                            <label for="endDate" style="color: #0D0E0F">Ngày kết thúc</label>-->
+<!--                            <input type="date" id="endDate" name="endDate" required>-->
+
+<!--                            <label for="department" style="color: #0D0E0F">Khoa</label>-->
+<!--                            <input type="text" id="department" name="department" placeholder="Nhập khoa" required>-->
+
+<!--                            <label style="color: #0D0E0F">Files</label>-->
+<!--                            <input type="file" id="fileInput" name="files" multiple/>-->
+
+<!--                            <label for="description">Mô tả</label>-->
+<!--                            <textarea id="description" placeholder="Nhập mô tả"></textarea>-->
+
+<!--                            <button type="submit" class="btn btn-submit">Lưu</button>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <table>
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tiêu đề</th>
+                        <th>Phòng ban</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Trạng thái</th>
+                        <th>file</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="project, iterStat : ${projects}">
+                        <td th:text="${iterStat.count}"></td>
+                        <td th:text="${project.title}"></td>
+                        <td th:text="${project.department}"></td>
+                        <td th:text="${project.startDate}"></td>
+                        <td th:text="${project.endDate}"></td>
+                        <td th:text="${project.status}"></td>
+                        <td>
+                            <a th:href="@{'/download'(fileName=${project.file})}"
+                               class="btn btn-download"
+                            >
+                                Tải về
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{'/admin/Project/edit?id=' + ${project.projectId}}"
+                               class="btn btn-edit">Sửa</a>
+                            <a th:href="@{'/admin/Project/delete?id=' + ${project.projectId}}"
+                               class="btn btn-delete"
+                               onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
@@ -146,6 +140,105 @@
     function changeRole() {
         form.submit();
     }
+
+    async function fetchProjects() {
+        try {
+            const response = await fetch('/admin/Project/view-project');
+            const projects = await response.json();
+            const tableBody = document.getElementById('projectList');
+
+            tableBody.innerHTML = ''; // Xóa dữ liệu cũ
+
+            projects.forEach((project, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${project.title}</td>
+                        <td>${project.title}</td>
+                        <td>${project.department}</td>
+                        <td>${project.startDate}</td>
+                        <td>${project.endDate}</td>
+                        <td>${project.status}</td>
+                        <td>${project.fileUrl ? project.fileUrl.split('/').pop() : 'Không có tệp'}</td>
+                        <td>
+                            ${project.fileUrl ? `<a href="${project.fileUrl}" target="_blank">Tải xuống</a>` : ''}
+                        </td>
+                    `;
+
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching projects:', error);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const openModalBtn = document.getElementById("openModalBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const modal = document.getElementById("modal");
+
+        // Mở modal
+        openModalBtn.addEventListener("click", function () {
+            modal.style.display = "block";
+        });
+
+        // Đóng modal
+        closeModalBtn.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+
+        // Đóng modal khi click ra ngoài
+        window.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    });
+
+    // Gọi hàm khi tải trang
+    document.addEventListener('DOMContentLoaded', fetchProjects);
+
+    document.getElementById("projectForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // Ngăn reload trang
+
+        // Lấy dữ liệu từ form
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+        const department = document.getElementById("department").value;
+        const maxStudents = document.getElementById("maxStudents").value;
+        const files = document.getElementById("files").value;
+        console.log(description);
+        // Tạo query parameters
+        const params = new URLSearchParams({
+            title: title,
+            description: description,
+            startDate: startDate,
+            endDate: endDate,
+            department: department,
+            maxStudents: maxStudents,
+            files: files
+        });
+        console.log(params);
+
+        // Gửi dữ liệu bằng Fetch API
+        fetch(`/admin/Project/create-project?${params.toString()}`, {
+            method: "POST"
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Thêm đồ án thành công!");
+                    window.location.reload();
+                } else {
+                    alert("Có lỗi xảy ra khi thêm đồ án!");
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi: ", error);
+                alert("Lỗi kết nối đến server!");
+            });
+    });
 </script>
 </body>
 </html>

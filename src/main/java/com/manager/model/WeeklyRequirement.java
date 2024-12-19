@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -19,14 +20,25 @@ public class WeeklyRequirement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requirementId;
 
+    private String description;
+
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "end_date", nullable = false)
+    private LocalDate endDate;
+
+    @Column(name = "week_number", nullable = false)
+    private Integer weekNumber;
+
+    @Column(name = "important_dates")
+    private String importantDates;
+
+    @Column(name = "additional_requirements")
+    private String additionalRequirements;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "projectId",referencedColumnName = "projectId", nullable = false)
     private Project project;
-
-    private String description;
-
-    private Date startDate;
-
-    private Date endDate;
 
 }

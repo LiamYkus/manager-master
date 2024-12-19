@@ -1,18 +1,22 @@
 package com.manager.controller.admin;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.manager.DTO.LecturerProjectCustom;
+import com.manager.FileService.CloudinaryService;
 import com.manager.FileService.StorageService;
-import com.manager.model.Project;
-import com.manager.model.ProjectLecturer;
-import com.manager.model.Role;
-import com.manager.model.User;
-import com.manager.repository.LecturerProjectRepository;
-import com.manager.repository.ProjectRepository;
-import com.manager.repository.RoleRepository;
-import com.manager.repository.UserRepository;
+import com.manager.model.*;
+import com.manager.repository.*;
 import com.manager.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -20,14 +24,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Controller
 @Transactional
@@ -66,6 +76,12 @@ public class AdminController {
     private StorageService storageService;
     @Autowired
     private LecturerProjectRepository lecturerProjectRepository;
+    @Autowired
+    private WeeklyRequirementRepository weeklyRequirementRepository;
+    @Autowired
+    private Cloudinary cloudinary;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @GetMapping("/admin")
     public String index(Model model, Principal principal) {
@@ -192,7 +208,14 @@ public class AdminController {
     }
     @GetMapping ("/admin/Project/view-project")
     public String viewProject(Model model) {
-        model.addAttribute("projects", projectRepository.findAll());
+        List<Project> projects = projectRepository.findAll();
+        for (Project project : projects) {
+            if (project.getFile() != null) {
+                String fileName = project.getFile().substring(project.getFile().lastIndexOf('/') + 1);
+                project.setFile(fileName); // Đặt tên file lại trong property `file`
+            }
+        }
+        model.addAttribute("projects", projects);
         return "pages/admin/Project/view_project";
     }
 
@@ -248,6 +271,7 @@ public class AdminController {
     public String addProjectForm(Model model,
                                  @RequestParam(name = "success", defaultValue = "false") boolean success) {
         List<User> list_user = userRepository.findAllUsersExcluding();
+        model.addAttribute("activePage", "createProject");
         model.addAttribute("list_user", list_user);
         model.addAttribute("project", new Project());
         model.addAttribute("success", success);
@@ -257,16 +281,17 @@ public class AdminController {
 
     @PostMapping("/admin/Project/create-project")
     public String saveProject(@RequestParam(name = "projectId") Optional<Long> projectId,
-                              @RequestParam(name = "title") Optional<String> title,
-                              @RequestParam(name = "description") Optional<String> description,
-                              @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Optional<LocalDate> startDate,
-                              @RequestParam(name = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Optional<LocalDate> endDate,
-                              @RequestParam(name = "status") Optional<String> status,
-                              @RequestParam(name = "department") Optional<String> department,
-                              @RequestParam(name = "maxStudents") Optional<Integer> maxStudents,
-                              @RequestParam("file") MultipartFile file,
-                              @RequestParam(name = "createdBy",defaultValue = "0") Optional<Long> createdBy
-                              ) {
+                              @RequestParam(name = "title") String title,
+                              @RequestParam(name = "description") String description,
+                              @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                              @RequestParam(name = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                              @RequestParam(name = "department") String department,
+                              @RequestParam(name = "maxStudents") Integer maxStudents,
+                              @RequestParam("files") MultipartFile files
+                              ) throws IOException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User u = userRepository.findByEmail(email);
         Project p;
         if (!projectId.isPresent()) {
             p = new Project();
@@ -274,19 +299,48 @@ public class AdminController {
             p = projectRepository.findById(projectId.get()).get();
         }
 
-        storageService.store(file);
-        p.setTitle(title.get());
-        p.setDescription(description.get());
-        p.setStartDate(startDate.get());
-        p.setEndDate(endDate.get());
-        p.setStatus(Project.Status.ChuaTienHanh);
-        p.setDepartment(department.get());
-        p.setMaxStudents(maxStudents.get());
-        p.setFile("/upload/" + file.getOriginalFilename());
+        long totalDays = ChronoUnit.DAYS.between(startDate, endDate) + 1;
 
-        User user = userService.findUserById(createdBy.get());
-        p.setCreatedBy(user);
+        if (totalDays < 7) {
+            throw new IllegalArgumentException("Khoảng thời gian không đủ để tạo một tuần báo cáo!");
+        }
+
+        String fileUrl = cloudinaryService.uploadFile(files);
+//        storageService.store(files);
+        p.setFile(fileUrl);
+        p.setTitle(title);
+        p.setCreatedBy(u);
+        p.setDescription(description);
+        p.setDepartment(department);
+        p.setMaxStudents(maxStudents);
+        p.setStatus(Project.Status.ChuaTienHanh);
+        p.setStartDate(startDate);
+        p.setEndDate(endDate);
         projectRepository.save(p);
+
+        // Tính số tuần và chia ngày theo tuần
+        int weekCount = (int) Math.ceil((double) totalDays / 7);
+        int daysPerWeek = 7;
+        int remainingDays = (int) (totalDays % 7);
+
+        LocalDate currentStartDate = startDate;
+
+        for (int weekNumber = 1; weekNumber <= weekCount; weekNumber++) {
+            LocalDate currentEndDate = currentStartDate.plusDays(daysPerWeek - 1);
+
+            if (weekNumber == weekCount && remainingDays > 0) {
+                currentEndDate = currentEndDate.plusDays(remainingDays);
+            }
+
+            WeeklyRequirement weeklyRequirement = new WeeklyRequirement();
+            weeklyRequirement.setProject(p);
+            weeklyRequirement.setWeekNumber(weekNumber);
+            weeklyRequirement.setStartDate(currentStartDate);
+            weeklyRequirement.setEndDate(currentEndDate);
+            weeklyRequirement.setDescription("Báo cáo tuần " + weekNumber);
+            weeklyRequirementRepository.save(weeklyRequirement);
+            currentStartDate = currentEndDate.plusDays(1);
+        }
         return "redirect:/admin/Project/view-project";
     }
 
@@ -321,5 +375,26 @@ public class AdminController {
         user.setActive(!user.isActive());
         userRepository.save(user);
         return "redirect:/admin/view-account";
+    }
+
+    @GetMapping("/admin/download")
+    public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) throws MalformedURLException {
+        // Tải file từ đường dẫn
+        try {
+            // Lấy file từ URL trên Cloudinary
+            URL url = new URL(fileName);
+            InputStream inputStream = url.openStream();
+
+            // Lấy tên file từ URL
+            String fileUrl = fileName.substring(fileName.lastIndexOf("/") + 1);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileUrl + "\"")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new InputStreamResource(inputStream));
+
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể tải file từ Cloudinary: " + e.getMessage());
+        }
     }
 }

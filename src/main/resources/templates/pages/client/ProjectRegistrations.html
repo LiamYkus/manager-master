@@ -89,7 +89,7 @@
                 /* Thông báo góc phải */
                 .notification {
                     background-color: #28a745; /* Màu xanh mặc định */
-                    color: white; /* Màu chữ */
+                    color: #f1ae42; /* Màu chữ */
                     padding: 15px 20px;
                     margin-top: 10px;
                     border-radius: 5px;
@@ -115,15 +115,6 @@
             </style>
         </head>
         <body>
-        <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
-            <div id="notification" class="notification" th:if="${error != null or success != null}">
-                <p id="notificationMessage"
-                   th:text="${error != null ? error : success}"
-                   th:classappend="${error != null ? 'error' : 'success'}"
-                   style="padding: 10px 20px; color: white; border-radius: 5px; font-weight: bold;">
-                </p>
-            </div>
-        </div>
         <div class="content-wrapper">
             <!-- Sidebar -->
             <div class="sidebar" style="margin-top: 27px;margin-left: 29px;">
@@ -131,6 +122,15 @@
                 <a href="/project_registrations" class="active">Đăng ký đồ án</a>
                 <a href="#">Hướng dẫn</a>
                 <a href="#">Trợ Giúp</a>
+            </div>
+            <div id="toast-container" style="position: fixed; top: 100px; right: 20px; z-index: 9999;">
+                <div id="notification" class="notification" th:if="${error != null or success != null}">
+                    <p id="notificationMessage"
+                       th:text="${error != null ? error : success}"
+                       th:classappend="${error != null ? 'error' : 'success'}"
+                       style="padding: 10px 20px; color: white; background-color: #B0DE78  ;  border-radius: 5px; font-weight: bold;">
+                    </p>
+                </div>
             </div>
             <div class="main-content" style="margin-top: 8px">
                 <div class="full-width-bg">

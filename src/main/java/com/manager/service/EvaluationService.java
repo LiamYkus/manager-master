@@ -31,7 +31,33 @@ public class EvaluationService {
                     (Date) result[6],
                     (Date) result[7],
                     (String) result[8],
-                    (String) result[9]
+                    (String) result[9],
+                    (Double) result[10],
+                    (Integer) result[11]
+            );
+            evaluationDTOS.add(custom);
+        }
+        return evaluationDTOS;
+    }
+
+    public List<EvaluationDTO> getAllWeeklyProjects(Long id) {
+        List<Object[]> results = evaluationRepository.findAllProjects(id);
+        List<EvaluationDTO> evaluationDTOS = new ArrayList<>();
+
+        for (Object[] result : results) {
+            EvaluationDTO custom = new EvaluationDTO(
+                    ((Number) result[0]).longValue(),
+                    (String) result[1],
+                    (Date) result[2],
+                    (String) result[3],
+                    (String) result[4],
+                    (String) result[5],
+                    (Date) result[6],
+                    (Date) result[7],
+                    (String) result[8],
+                    (String) result[9],
+                    (Double) result[10],
+                    (Integer) result[11]
             );
             evaluationDTOS.add(custom);
         }

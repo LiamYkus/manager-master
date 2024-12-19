@@ -1,5 +1,5 @@
 :root {
-    --main-color: #C92127;
+    --main-color: #407225;
     --color-dark: #1D2231;
     --text-gray: #8390A2;
 }
@@ -315,3 +315,183 @@ td a {
 h2 {
     color: var(--main-color)!important;
 }
+
+/* Tổng thể phần form-container */
+.form-container {
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: auto; /* Giúp nội dung không bị che mất */
+    width: 1702px;
+}
+
+/* Xử lý phần table để gọn hơn */
+.list-accounts table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    border-spacing: 0;
+}
+
+.list-accounts th,
+.list-accounts td {
+    padding: 12px 16px; /* Điều chỉnh padding để bảng rộng hơn */
+    text-align: center;
+    white-space: nowrap; /* Không cho nội dung bị xuống dòng */
+}
+
+.list-accounts thead {
+    background-color: var(--main-color);
+    color: #fff;
+}
+
+.list-accounts tbody tr {
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.list-accounts tbody tr td {
+    background: #fff;
+}
+
+/* Thêm khoảng cách cho nút để không bị che khuất */
+.list-accounts a {
+    display: inline-block;
+    margin: 0 4px; /* Tạo khoảng cách giữa các nút */
+    padding: 6px 12px;
+    color: #fff;
+    background: var(--main-color);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.list-accounts a:hover {
+    background-color: #a3181c;
+}
+
+/* Tạo khoảng cách dưới cùng */
+.form-container {
+    margin-bottom: 2rem; /* Tạo khoảng cách để không bị che khuất */
+}
+
+/* Phần main mới */
+.main-assignment {
+    padding: 2rem 1.5rem;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 90px);
+}
+
+.main-assignment .assignment-container {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+    width: 100%;
+    max-width: 700px; /* Độ rộng tối đa của form */
+}
+
+.main-assignment .assignment-title {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.main-assignment .assignment-fields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Hai cột */
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.main-assignment .assignment-input label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.main-assignment .assignment-input select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #f8f8f8;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.main-assignment .assignment-input select:focus {
+    outline: none;
+    border-color: #c92127;
+    box-shadow: 0 0 5px rgba(201, 33, 39, 0.5);
+}
+
+.main-assignment .assignment-button {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.main-assignment .assignment-button button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem 1.5rem;
+    background-color: #407225;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.main-assignment .assignment-button button:hover {
+    background-color: #e7e7e7;
+}
+
+.main-assignment .assignment-success img {
+    display: block;
+    margin: 1rem auto 0;
+    width: 60px;
+    height: 60px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-assignment .assignment-fields {
+        grid-template-columns: 1fr; /* Xếp dọc khi màn hình nhỏ */
+    }
+
+    .main-assignment .assignment-container {
+        padding: 1.5rem;
+    }
+}
+
+.btn-download {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #007bff; /* Màu xanh giống Bootstrap */
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.btn-download:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+    color: #fff;
+}
+
+

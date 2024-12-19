@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ProjectGradeRepository extends JpaRepository<ProjectGrade, Long> {
 
-    @Query(value = " SELECT project.project_id, project.title, project.description, project.start_date, project.end_date, user.first_name, user.last_name\n" +
+    @Query(value = " SELECT DISTINCT(project.project_id), project.title, project.description, project.start_date, project.end_date, user.first_name, user.last_name\n" +
             "                        FROM project\n" +
             "                       INNER JOIN project_registrations ON project_registrations.project_id = project.project_id\n" +
             "                       INNER JOIN user ON project_registrations.student_id = user.user_id\n" +

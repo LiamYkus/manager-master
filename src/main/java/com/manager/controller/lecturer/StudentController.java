@@ -3,10 +3,7 @@ package com.manager.controller.lecturer;
 import com.manager.DTO.*;
 import com.manager.model.*;
 import com.manager.repository.*;
-import com.manager.service.EvaluationService;
-import com.manager.service.ProjectGradeService;
-import com.manager.service.ProjectService;
-import com.manager.service.WeeklyRequirementService;
+import com.manager.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -16,10 +13,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -49,30 +50,23 @@ public class StudentController {
     private ProjectGradeRepository projectGradeRepository;
     @Autowired
     private ProjectGradeService projectGradeService;
+    @Autowired
+    private LecturerProjectRepository lecturerProjectRepository;
+    @Autowired
+    private LecturerProjectService lecturerProjectService;
 
     @GetMapping("/lecturer")
     public String getDashBoard(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         User u = userRepository.findByEmail(email);
-//        List<Order> set = orderRepository.findAll();
-//        List<Order> list = new ArrayList<>();
-//        for (Order i : set) {
-//            if ((i.getOrderStatuses().size() == 2) ||
-//                    (i.getOrderStatuses().size() == 3 && i.getShipper().equals(u))) {
-//                for (OrderStatus j : i.getOrderStatuses()) {
-//                    if (j.getOrderStatus().trim().contains("Đã xác nhận")) {
-//                        list.add(i);
-//                    }
-//                }
-//            }
-//        }
-//        double sum = set.stream().filter(order -> order.getOrderStatuses().size() == 4 && order.getShipper().equals(u))
-//                .map(order -> order.getTotalPrice().doubleValue()).reduce(0.0, (aDouble, aDouble2) -> aDouble + aDouble2);
-//        double count = set.stream().filter(order -> order.getOrderStatuses().size() == 4 && order.getShipper().equals(u)).count();
-//        model.addAttribute("order_set", list);
-//        model.addAttribute("sum", sum);
-//        model.addAttribute("count", count);
+        List<ProjectConfirm> project = projectService.getAllProjectsConfirm(u.getId());
+        Integer p = projectRepository.findAllProjectConfirms(u.getId());
+        Integer pj = projectRepository.findAllProjectConfirmss(u.getId());
+        model.addAttribute("weeklyRequirement", new WeeklyRequirement());
+        model.addAttribute("count", p);
+        model.addAttribute("counts", pj);
+        model.addAttribute("projects", project);
         return "pages/lecturer/dashboard";
     }
 
@@ -81,8 +75,17 @@ public class StudentController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         User u = userRepository.findByEmail(email);
+        List<Integer> weekNumbers = weeklyRequirementService.getAvailableWeekNumbers();
         List<WeeklyRequirement> requirements = weeklyRequirementService.getAllWeeklyRequirements(u.getId());
+        List<Double> grade = weeklyRequirementRepository.findAllProjectByGrade(u.getId());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        requirements.forEach(req -> {
+            req.setStartDate(LocalDate.parse(req.getStartDate().format(formatter)));
+            req.setEndDate(LocalDate.parse(req.getEndDate().format(formatter)));
+        });
         model.addAttribute("weeklyRequirement", requirements);
+        model.addAttribute("grade", grade);
+        model.addAttribute("weekNumbers", weekNumbers);
         return "pages/lecturer/StudentWeeklyReport/StudentWeeklyReport";
     }
 
@@ -95,6 +98,12 @@ public class StudentController {
         model.addAttribute("weeklyRequirement", new WeeklyRequirement());
         model.addAttribute("projects", project);
         return "pages/lecturer/StudentWeeklyReport/AddStudentWeeklyReport";
+    }
+
+    @GetMapping("/lecturer/get-weeks")
+    @ResponseBody
+    public List<Map<String, String>> getWeeks(@RequestParam Long projectId) {
+        return weeklyRequirementService.calculateWeeks(projectId);
     }
 
     @GetMapping("/lecturer/edit_StudentWeeklyReport")
@@ -114,45 +123,89 @@ public class StudentController {
         return "redirect:/lecturer/list_StudentWeeklyReport";
     }
 
-    @PostMapping("/lecturer/create_StudentWeeklyReport")
-    public String saveProject(@RequestParam(name = "requirementId") Optional<Long> requirementId,
-                              @RequestParam(name = "project", defaultValue = "0") Optional<Long> project,
-                              @RequestParam(name = "description") Optional<String> description,
-                              @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Optional<Date> startDate,
-                              @RequestParam(name = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Optional<Date> endDate
-    ) {
-        WeeklyRequirement w;
-        if (!requirementId.isPresent()) {
-            w = new WeeklyRequirement();
-        } else {
-            w = weeklyRequirementRepository.findById(requirementId.get()).get();
-        }
-        Project p = projectService.findProjectById(project.get());
-        ProjectRegistration pr = projectRegistrationRepository.findAllProjectByUserID(p.getProjectId());
-        w.setProject(p);
-        w.setDescription(description.get());
-        w.setStartDate(startDate.get());
-        w.setEndDate(endDate.get());
-        weeklyRequirementRepository.save(w);
+    @PostMapping("/lecturer/create-weekly-reports")
+    public String createWeeklyReports(@RequestParam Long projectId,
+                                      @RequestParam Map<String, String> weeklyRequirements,
+                                      RedirectAttributes redirectAttributes) {
+        try {
 
-        //add notification
-        Notification notification = new Notification();
-        notification.setUser(pr.getStudent());
-        notification.setTitle("Đồ án " + p.getTitle() + " của bạn có lịch cho quá trình làm đồ án!!!");
-        notification.setDescription("Đồ án " + p.getTitle() + " của bạn có lịch cho quá trình làm đồ án!!!");
-        notificationRepository.save(notification);
+            List<WeeklyRequirementDTO> dtoList = new ArrayList<>();
+            int index = 0;
+
+            // Gom nhóm dữ liệu từ Map vào danh sách DTO
+            while (weeklyRequirements.containsKey("weeklyRequirements[" + index + "].description")) {
+                WeeklyRequirementDTO dto = new WeeklyRequirementDTO();
+                dto.setDescription(weeklyRequirements.get("weeklyRequirements[" + index + "].description"));
+                dto.setStartDate(LocalDate.parse(weeklyRequirements.get("weeklyRequirements[" + index + "].startDate")));
+                dto.setEndDate(LocalDate.parse(weeklyRequirements.get("weeklyRequirements[" + index + "].endDate")));
+                dto.setWeekNumber(weeklyRequirements.get("weeklyRequirements[" + index + "].weekNumber"));
+
+                dtoList.add(dto);
+                index++;
+            }
+            weeklyRequirementService.saveWeeklyReports(projectId, dtoList);
+
+            redirectAttributes.addFlashAttribute("success", "Tạo yêu cầu báo cáo tuần thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Đã xảy ra lỗi: " + e.getMessage());
+        }
         return "redirect:/lecturer/list_StudentWeeklyReport";
     }
 
+//    @PostMapping("/lecturer/create_StudentWeeklyReport")
+//    public String saveProject(@RequestParam Long projectId,
+//                              @RequestParam Map<String, String>[] weeklyRequirements,
+//                              RedirectAttributes redirectAttributes
+//    ) {
+//
+//        List<Project> projectList = projectRepository.findById(projectId);
+//                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy đồ án"));
+//
+//        for (Map<String, String> requirement : weeklyRequirements) {
+//            WeeklyRequirement weeklyRequirement = new WeeklyRequirement();
+//            weeklyRequirement.setProject(project);
+//            weeklyRequirement.setWeekNumber(Integer.parseInt(requirement.get("weekNumber")));
+//            weeklyRequirement.setStartDate(LocalDate.parse(requirement.get("startDate")));
+//            weeklyRequirement.setEndDate(LocalDate.parse(requirement.get("endDate")));
+//            weeklyRequirement.setDescription(requirement.get("description"));
+//
+//            weeklyRequirementRepository.save(weeklyRequirement);
+//        }
+//        WeeklyRequirement w;
+//        if (!requirementId.isPresent()) {
+//            w = new WeeklyRequirement();
+//        } else {
+//            w = weeklyRequirementRepository.findById(requirementId.get()).get();
+//        }
+//        Project p = projectService.findProjectById(project.get());
+//        ProjectRegistration pr = projectRegistrationRepository.findAllProjectByUserID(p.getProjectId());
+//        w.setProject(p);
+//        w.setDescription(description.get());
+//        w.setStartDate(startDate.get());
+//        w.setEndDate(endDate.get());
+//        weeklyRequirementRepository.save(w);
+
+//        //add notification
+//        Notification notification = new Notification();
+//        notification.setUser(pr.getStudent());
+//        notification.setTitle("Đồ án " + p.getTitle() + " của bạn có lịch cho quá trình làm đồ án!!!");
+//        notification.setDescription("Đồ án " + p.getTitle() + " của bạn có lịch cho quá trình làm đồ án!!!");
+//        notificationRepository.save(notification);
+//        return "redirect:/lecturer/list_StudentWeeklyReport";
+//    }
+
     @GetMapping("/lecturer/evaluation")
-    public String getEvaluation(@RequestParam(name = "id") Optional<Long> id, Model model, HttpServletRequest request) {
+    public String getEvaluation(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         User u = userRepository.findByEmail(email);
         if (u == null) {
             return "redirect:/login";
         }
-        List<EvaluationDTO> evaluations = evaluationService.getAllWeeklyProject();
+        List<Integer> weekNumber = evaluationRepository.findAllProjectsWeek(u.getId());
+        List<EvaluationDTO> evaluations = evaluationService.getAllWeeklyProjects(u.getId());
+
+        model.addAttribute("weekNumber", weekNumber);
         model.addAttribute("evaluations", evaluations);
         return "pages/lecturer/Evaluations";
     }
@@ -187,7 +240,6 @@ public class StudentController {
                                               @RequestParam BigDecimal grade,
                                               @RequestParam String feedback,
                                               Authentication authentication) {
-        // Lấy thông tin giảng viên từ SecurityContext
         String email = authentication.getName();
         User lecturer = userRepository.findByEmail(email);
 
@@ -195,10 +247,8 @@ public class StudentController {
             return ResponseEntity.badRequest().body("Giảng viên không tồn tại.");
         }
 
-        // Tìm báo cáo sinh viên
         StudentWeeklyReport report = studentWeeklyReportsRepository.findById(reportId)
                 .orElseThrow(() -> new RuntimeException("Báo cáo không tồn tại"));
-        // Tạo mới hoặc cập nhật Evaluation
         Evaluation evaluation = new Evaluation();
         evaluation.setStudentReport(report);
         evaluation.setLecturer(lecturer);
@@ -206,6 +256,9 @@ public class StudentController {
         evaluation.setFeedback(feedback);
         evaluation.setEvaluationDate(new Date());
         evaluationRepository.save(evaluation);
+
+        report.setWeeklyReportGrade(grade.doubleValue());
+        studentWeeklyReportsRepository.save(report);
 
         Notification notification = new Notification();
         notification.setUser(report.getStudent());
@@ -307,28 +360,5 @@ public class StudentController {
         }
 
         return ResponseEntity.badRequest().body("Không tìm thấy đồ án!");
-    }
-
-    @GetMapping("/lecturer/grade")
-    public String getGrade(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        User u = userRepository.findByEmail(email);
-        if (u == null) {
-            return "redirect:/login";
-        }
-        List<GradeDTO> projectGrade = projectGradeService.getAllGrade();
-        model.addAttribute("projectGrades", projectGrade);
-        return "pages/lecturer/Grade";
-    }
-
-    @GetMapping("/lecturer/details")
-    public String showEvaluationDetails(@RequestParam("projectId") Long projectId,
-                                        @RequestParam("userId") Long userId,
-                                        Model model) {
-        List<GradeDetailDTO> evaluations = evaluationService.evaluationList(projectId, userId);
-
-        model.addAttribute("evaluations", evaluations);
-        return "pages/lecturer/GradeDetail"; // Thymeleaf template name
     }
 }

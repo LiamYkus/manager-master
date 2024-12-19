@@ -8,53 +8,12 @@
     <title>Thêm đồ án</title>
     <link rel="stylesheet"
           href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
-    <link rel="stylesheet" th:href="@{/css/admin/create_account.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/create_project.css}">
     <link rel="icon" href="/image/p.png" type="image/x-icon">
 </head>
 <body>
 <input type="checkbox" id="nav-toggle">
-<div class="sidebar">
-    <div class="sidebar-brand" style="margin-bottom: 30px">
-        <img style="width: 282px; height: 60px; object-fit: cover; border-radius: 8px" src="https://phuongnamvina.com/img_data/images/logo-truong.jpg">
-    </div>
-
-    <div class="sidebar-menu">
-        <ul>
-            <li>
-                <a href="/admin"><span class="las la-igloo"></span>
-                    <span>Trang chủ</span></a>
-            </li>
-            <li>
-                <a href="/admin/create-account" ><span class="las la-users"></span>
-                    <span>Thêm tài khoản</span></a>
-            </li>
-            <li>
-                <a href="/admin/view-account"><span class="las la-user-circle"></span>
-                    <span>Danh sách tài khoản</span></a>
-            </li>
-            <li>
-                <a href="/admin/Project/create-project" class="active"><span class="las la-user-astronaut"></span>
-                    <span>Thêm đồ án</span></a>
-            </li>
-            <li>
-                <a href="/admin/Project/view-project"><span class="las la-shopping-bag"></span>
-                    <span>Danh sách đồ án</span></a>
-            </li>
-            <li>
-                <a href="/admin/Assignment/view-assignment"><span class="las la-user-tag"></span>
-                    <span>Danh sách phân công</span></a>
-            </li>
-            <li>
-                <a href="/admin/Assignment/create-assignment"><span class="las la-user-tag"></span>
-                    <span>Phân công</span></a>
-            </li>
-            <li>
-                <a href="/perform_logout"><span class="las la-sign-out-alt"></span>
-                    <span>Đăng xuất</span></a>
-            </li>
-        </ul>
-    </div>
-</div>
+<div th:replace="/fragments/admin/sidebar :: sidebar"></div>
 </div>
 
 <div class="main-content">
@@ -116,21 +75,18 @@
                             </div>
 
                             <div class="input-field">
-                                <label>File</label>
-                                <input type="file" class="form-control-file" id="p_imageUrl" name="file"
-                                       accept="image/*">
-                                <div class="error-msg">
-                                    <p th:each="err : ${#fields.errors('file')}" th:text="${err}"></p>
-                                </div>
+                                <label>Files</label>
+                                <input type="file" id="fileInput" name="files" multiple/>
                             </div>
 
                             <div class="input-field">
                                 <label>Mô tả</label>
-                                <textarea th:field="*{description}" placeholder="Mô tả dự án" required></textarea>
-                                <div class="error-msg">
-                                    <p th:each="err : ${#fields.errors('description')}" th:text="${err}"></p>
+                                <div id="description" contenteditable="true" class="raw-html-description"
+                                     style="border: 1px solid #e3d1d1; padding: 10px; min-height: 314px; max-height: 200px; overflow-y: auto;width: 1129px ">
                                 </div>
+                                <input type="hidden" name="description" id="descriptionHidden">
                             </div>
+
                         </div>
                     </div>
 
@@ -148,36 +104,27 @@
 
 </div>
 <script>
-    document.getElementById("p_imageUrl").onchange = function (evt) {
-        var tgt = evt.target || window.event.srcElement,
-            files = tgt.files;
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("fileInput");
+        const fileListContainer = document.getElementById("fileListContainer");
 
-        if (FileReader && files && files.length) {
-            var fileListContainer = document.getElementById("fileListContainer");
-            fileListContainer.innerHTML = ""; // Xóa danh sách cũ
+        fileInput.addEventListener("change", function () {
+            fileListContainer.innerHTML = "";
 
-            Array.from(files).forEach(function (file, index) {
-                var listItem = document.createElement("div");
+            const files = Array.from(fileInput.files);
+            if (files.length === 0) {
+                fileListContainer.innerHTML = "<p>Không có file nào được chọn</p>";
+                return;
+            }
+
+            files.forEach((file, index) => {
+                const listItem = document.createElement("div");
                 listItem.classList.add("file-item");
-                listItem.innerHTML = `<strong>File ${index + 1}:</strong> ${file.name}`;
-
-                // Nếu file là hình ảnh, tạo preview
-                if (file.type.startsWith("image/")) {
-                    var fr = new FileReader();
-                    fr.onload = function () {
-                        var img = document.createElement("img");
-                        img.src = fr.result;
-                        img.style.maxWidth = "100px";
-                        img.style.marginLeft = "10px";
-                        listItem.appendChild(img);
-                    };
-                    fr.readAsDataURL(file);
-                }
-
+                listItem.textContent = `File ${index + 1}: ${file.name}`;
                 fileListContainer.appendChild(listItem);
             });
-        }
-    };
+        });
+    });
     document.addEventListener("DOMContentLoaded", function () {
         const form = document.querySelector("form");
         const startDateInput = document.getElementById("startDate");
@@ -204,6 +151,14 @@
             // Kiểm tra nếu startDate lớn hơn hoặc bằng endDate
             if (startDate >= endDate) {
                 alert("Ngày bắt đầu phải nhỏ hơn ngày kết thúc!");
+                e.preventDefault();
+            }
+
+            // Kiểm tra nếu khoảng cách giữa startDate và endDate > 30 ngày
+            const differenceInTime = endDate.getTime() - startDate.getTime();
+            const differenceInDays = differenceInTime / (1000 * 3600 * 24); // Chuyển đổi sang ngày
+            if (differenceInDays <= 30) {
+                alert("Khoảng cách giữa ngày bắt đầu và ngày kết thúc phải lớn hơn 30 ngày!");
                 e.preventDefault();
             }
         });

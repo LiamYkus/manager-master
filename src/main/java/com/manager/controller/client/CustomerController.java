@@ -305,7 +305,7 @@ public class CustomerController {
         User user = userRepository.findByEmail(authentication.getName());
         List<Project> projects = projectService.getAllProjectsBy();
         model.addAttribute("projects", projects);
-        return "pages/client/ProjectRegistrations";
+        return "pages/client/ProjectRegistration";
     }
 
     @GetMapping("/register")

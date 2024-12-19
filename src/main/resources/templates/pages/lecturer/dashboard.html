@@ -17,7 +17,7 @@
         <div class="navbar-top">
             <div class="profile">
                 <div class="info">
-                    <h2>Welcome back, </h2>
+                    <h2>Chào mừng, </h2>
                     <p class="text-muted"
                        th:text="${authen_user.firstName + ' ' + (authen_user.lastName == null ? '' : authen_user.lastName)}"></p>
                 </div>
@@ -52,20 +52,14 @@
                 <span class="material-symbols-outlined"> grid_view </span>
                 <h3>Đánh giá đồ án</h3>
             </a>
-            <a th:href="@{/lecturer/grade}">
-                <span class="material-symbols-outlined"> grid_view </span>
-                <h3>Bảng điểm</h3>
-            </a>
             <a href="/perform_logout" class="logout">
-                <span class="material-symbols-outlined"> logout </span>
-                <h3>Logout</h3>
+                <span class="material-symbols-outlined"> Logout </span>
+                <h3>Đăng xuất</h3>
             </a>
         </div>
     </aside>
     <main>
-        <h1 style="margin-bottom: 2rem">Teacher Dashboard</h1>
-
-        <h2>General Information</h2>
+        <h1 style="margin-bottom: 2rem">Giảng viên</h1>
         <div class="insights">
             <div class="insight sales">
                                         <span class="material-symbols-outlined">
@@ -73,8 +67,8 @@
                                         </span>
                 <div class="insight-content">
                     <div class="insight-figure">
-                        <h3>Total Money Gained</h3>
-<!--                        <p th:text="${sum}"></p>-->
+                        <h3>Tổng đồ án được phân công</h3>
+                        <p th:text="${count}"></p>
                     </div>
                 </div>
             </div>
@@ -85,45 +79,41 @@
                                         </span>
                 <div class="insight-content">
                     <div class="insight-figure">
-                        <h3>Total Shipped Orders</h3>
-<!--                        <p th:text="${count}"></p>-->
+                        <h3>Tổng đồ án chưa xác nhận</h3>
+                        <p th:text="${counts}"></p>
                     </div>
                 </div>
             </div>
         </div>
         <!-- USER TABLE -->
         <div class="recent-orders">
-            <h2>Manage Orders</h2>
+            <h2>Đồ án chưa xác nhận</h2>
             <table>
                 <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Customer Name</th>
-                    <th>Phone</th>
-                    <th>Address</th>
-                    <th>Order Date</th>
-                    <th>Status</th>
-                    <th>View</th>
-                    <th>Action</th>
+                    <th>STT</th>
+                    <th>Đề Tài</th>
+                    <th>Yêu cầu</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Sinh viên thực hiện</th>
+                    <th>Thao tác</th>
                 </tr>
                 </thead>
-<!--                <tbody th:each="i : ${order_set}">-->
-                <tr>
-<!--                    <td th:text="${i.orderId}"></td>-->
-<!--                    <td th:text="${i.name}"></td>-->
-<!--                    <td th:text="${i.phoneNumber}"></td>-->
-<!--                    <td th:text="${i.address}"></td>-->
-<!--                    <td th:text="${i.orderDate}">-->
-<!--                    </td>-->
-<!--                    <td class="status" th:text="${i.orderStatuses.size() == 2 ? 'Waitting' : 'Processing'}"></td>-->
-<!--                    <td><a th:href="@{/shipper/detail(id=${i.orderId})}" class="success">See-->
-<!--                        details</a></td>-->
-<!--                    <td>-->
-<!--                        <button type="button" th:onclick="'javascript:receiveOrder(\'' + ${i.orderId} +'\',\''+ ${i.orderStatuses.size()} + '\');'"-->
-<!--                                class="success" value="Take" th:if="${i.orderStatuses.size() == 2 }">Take</button>-->
-<!--                        <button type="button" th:onclick="'javascript:receiveOrder(\'' + ${i.orderId} +'\',\''+ ${i.orderStatuses.size()} + '\');'"-->
-<!--                                class="success" value="Confirm" th:unless="${i.orderStatuses.size() == 2 }">Confirm</button>-->
-<!--                    </td>-->
+                <tbody>
+                <tr th:each="project : ${projects}">
+                    <td th:text="${project.id}"></td>
+                    <td th:text="${project.title}"></td>
+                    <td th:text="${project.description}"></td>
+                    <td th:text="${#dates.format(project.startDate, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${#dates.format(project.endDate, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${project.firstName + ' ' + project.lastName}"></td>
+                    <td>
+                        <button class="btn btn-warning" onclick="confirmProject(this)"
+                                th:data-project-id="${project.id}">
+                            Xác nhận
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -143,20 +133,6 @@
         }
     });
 
-    function receiveOrder(j, k) {
-        if (k == 2) {
-            var i = confirm('Do you want to receive Order?');
-            if (i === true) {
-                window.location.href = '/lecturer/receiveOrder?id=' + j;
-            }
-        } else {
-            var a = confirm("Shipped Successful??");
-            if (a === true) {
-                k = 'Giao hàng thành công';
-                window.location.href = '/lecturer/completeOrder?id=' + j + '&message=' + k;
-            }
-        }
-    }
 </script>
 </body>
 </html>

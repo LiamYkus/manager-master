@@ -377,7 +377,7 @@ table td a {
     padding: var(--card-padding);
     border-radius: var(--card-border-radius);
     box-shadow: var(--box-shadow);
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -538,7 +538,7 @@ main {
 
 .reports-section h2 {
     font-size: 1.5rem;
-    color: #4CAF50;
+    color: rgba(248, 205, 0, 0.54);
     margin-bottom: 1rem;
 }
 
@@ -554,18 +554,18 @@ main {
 }
 
 .reports-table thead {
-    background-color: #4CAF50;
-    color: white;
+    background-color: rgba(248, 205, 60, 0.54);
+    color: #000000;
 }
 
 .reports-table th, .reports-table td {
     text-align: left;
     padding: 12px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #000000;
 }
 
 .reports-table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #ffffff;
 }
 
 .reports-table th {
@@ -739,6 +739,303 @@ main {
     }
 }
 
+
+/* Reset padding and margin */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Container styling */
+.main-form-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1267px;
+    margin: 40px auto;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #d81b1b;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* Label Styling */
+.form-label {
+    color: #d81b1b;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* Input fields */
+input[type="text"], input[type="date"], textarea, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    height: 150px;
+}
+
+button {
+    background-color: #d81b1b;
+    color: #000000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #b31818;
+}
+
+/* Responsive row layout */
+.row {
+    display: flex;
+    gap: 20px;
+}
+
+.col-md-6 {
+    flex: 1;
+}
+
+.mb-4 {
+    margin-bottom: 20px;
+}
+
+/* Tabs */
+.tabs-container {
+    margin-bottom: 1rem;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 2px solid #008be3;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #333;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-button.active {
+    font-weight: bold;
+    color: #4caf50;
+    border-bottom-color: #4caf50;
+}
+
+.tab-button:hover {
+    color: #4caf50;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.tab-content.active-content {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.filter-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.filter-container label {
+    display: none;
+}
+
+.filter-container select {
+    width: 150px;
+    padding: 0.4rem;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    background-color: #fff;
+}
+.report-duration {
+    font-size: 0.9rem;
+    font-weight: normal;
+    color: #333;
+    margin: 0.5rem 0 1rem;
+    text-align: left;
+}
+
+/* Container chứa tất cả các tuần */
+#weeklyRequirementsContainer {
+    display: grid; /* Sử dụng Grid Layout */
+    grid-template-columns: repeat(4, 1fr); /* 4 cột với kích thước bằng nhau */
+    gap: 20px; /* Khoảng cách giữa các ô */
+    margin: 20px 0;
+}
+
+/* Mỗi khối tuần */
+.week-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center; /* Căn giữa nội dung */
+}
+
+/* Tiêu đề tuần */
+.week-container h3 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 0 0 5px;
+}
+
+/* Nhãn yêu cầu */
+.week-container label {
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+}
+
+/* Textarea nhập yêu cầu */
+.week-container textarea {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    resize: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.week-container textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Responsive: 2 cột trên màn hình nhỏ hơn */
+@media (max-width: 1200px) {
+    #weeklyRequirementsContainer {
+        grid-template-columns: repeat(2, 1fr); /* Chuyển thành 2 cột */
+    }
+}
+
+/* Responsive: 1 cột trên màn hình rất nhỏ */
+@media (max-width: 768px) {
+    #weeklyRequirementsContainer {
+        grid-template-columns: 1fr; /* Chỉ 1 cột trên màn hình nhỏ */
+    }
+}
+
+.report-container {
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+}
+
+.report-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: red;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.report-tabs {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.report-tab-btn {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    margin-right: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.report-tab-btn.active {
+    background-color: #28a745;
+    color: white;
+}
+
+.report-tab-content {
+    display: none;
+    margin-top: 20px;
+}
+
+.report-tab-content.active {
+    display: block;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.report-table th, .report-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.report-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.report-table td a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.report-btn-primary {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.report-btn-primary:hover {
+    background-color: #218838;
+}
 
 
 
