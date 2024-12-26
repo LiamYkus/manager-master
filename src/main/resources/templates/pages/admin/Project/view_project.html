@@ -39,11 +39,14 @@
             <form id="frm" action="/admin/Project/view-project" method="get">
                 <div class="search-wrapper">
                     <span class="las la-search"></span>
-                    <input type="search" th:text="${title}" name="email" placeholder="Tìm kiếm...">
+                    <input type="search" name="keyword" placeholder="Tìm theo tên đồ án...">
                 </div>
                 <div class="dropdown-role" style="float: left">
-                    <select name="role-id" class="dropdown-box" onchange="changeRole()">
-                        <option class="option" value="0">Tất cả</option>
+                    <select name="status" class="dropdown-box" onchange="changeRole()">
+                        <option value="" th:selected="${status == null || status.isEmpty()}">Tất cả</option>
+                        <option value="ChuaTienHanh" th:selected="${status == 'ChuaTienHanh'}">Chưa tiến hành</option>
+                        <option value="DangTienHanh" th:selected="${status == 'DangTienHanh'}">Đang tiến hành</option>
+                        <option value="HoanThanh" th:selected="${status == 'HoanThanh'}">Hoàn thành</option>
                     </select>
                 </div>
             </form>

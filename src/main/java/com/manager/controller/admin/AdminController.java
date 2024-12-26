@@ -246,20 +246,33 @@ public class AdminController {
         return "pages/admin/view_account";
     }
     @GetMapping ("/admin/Project/view-project")
-    public String viewProject(Model model) {
-        List<Project> projects = projectRepository.findAll();
+    public String viewProject(Model model, @RequestParam(required = false) String status, @RequestParam(required = false) String keyword) {
+        List<Project> projects;
+        if (status == null || status.isEmpty() && (keyword == null || keyword.isEmpty())) {
+            projects = projectRepository.findAll();
+        } else if (status != null && !status.isEmpty()) {
+            if (keyword != null && !keyword.isEmpty()) {
+                projects = projectRepository.findAllBylikeStatuss(status, keyword); // Lọc theo trạng thái và từ khóa
+            } else {
+                projects = projectRepository.findAllByStatuss(status); // Lọc theo trạng thái
+            }
+        } else {
+            projects = projectRepository.findAllBylikeKey(keyword); // Lọc theo từ khóa
+        }
         for (Project project : projects) {
             if (project.getFile() != null) {
                 String fileName = project.getFile().substring(project.getFile().lastIndexOf('/') + 1);
                 project.setFile(fileName); // Đặt tên file lại trong property `file`
             }
         }
+        model.addAttribute("status", status);
         model.addAttribute("projects", projects);
         return "pages/admin/Project/view_project";
     }
 
     @GetMapping ("/admin/Assignment/view-assignment")
-    public String viewProjectAssignment(Model model) {
+    public String viewProjectAssignment(Model model, @RequestParam(required = false) String keyword,
+                                        @RequestParam(required = false) Long lecturerId) {
         List<LecturerProjectCustom> projectCustoms = lecturerProjectService.getAllLecturerProject();
         model.addAttribute("projects", projectCustoms);
         return "pages/admin/Assignment/view";

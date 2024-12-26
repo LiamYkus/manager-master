@@ -40,6 +40,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query(value = "SELECT p.* FROM project p WHERE p.status = ?1",nativeQuery = true)
     List<Project> findAllByStatuss(String status);
 
+    @Query(value = "SELECT p.* FROM project p WHERE p.status = ?1 AND p.title LIKE CONCAT('%', ?2, '%')",nativeQuery = true)
+    List<Project> findAllBylikeStatuss(String status, String keyword);
+
+    @Query(value = "SELECT p.* FROM project p WHERE p.title LIKE CONCAT('%', ?1, '%');",nativeQuery = true)
+    List<Project> findAllBylikeKey(String status);
+
     @Query(value = "SELECT * FROM project WHERE status = N'Đang tiến hành' or status = N'Hủy';",nativeQuery = true)
     List<Project> findAllPByStatus();
 
