@@ -77,15 +77,15 @@
                                        required>
                             </div>
 
-                            <div class="input-field">
-                                <label>Trạng thái</label>
-                                <select th:field="*{status}" id="status" name="status" required>
-                                    <option value="ChuaTienHanh" th:selected="${project?.status == 'ChuaTienHanh'}">Chưa bắt đầu</option>
-                                    <option value="DangTienHanh" th:selected="${project?.status == 'DangTienHanh'}">Đang tiến hành</option>
-                                    <option value="HoanThanh" th:selected="${project?.status == 'HoanThanh'}">Hoàn thành</option>
-                                    <option value="Huy" th:selected="${project?.status == 'Huy'}">Hủy bỏ</option>
-                                </select>
-                            </div>
+<!--                            <div class="input-field">-->
+<!--                                <label>Trạng thái</label>-->
+<!--                                <select th:field="*{status}" id="status" name="status" required>-->
+<!--                                    <option value="ChuaTienHanh" th:selected="${project?.status == 'ChuaTienHanh'}">Chưa bắt đầu</option>-->
+<!--                                    <option value="DangTienHanh" th:selected="${project?.status == 'DangTienHanh'}">Đang tiến hành</option>-->
+<!--                                    <option value="HoanThanh" th:selected="${project?.status == 'HoanThanh'}">Hoàn thành</option>-->
+<!--                                    <option value="Huy" th:selected="${project?.status == 'Huy'}">Hủy bỏ</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
 
                             <div class="input-field">
                                 <label for="createdBy" th:value="${project?.createdBy.getFirstName()}">Người tạo</label> <select class="form-control"

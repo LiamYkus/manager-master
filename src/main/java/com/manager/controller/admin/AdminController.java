@@ -337,8 +337,7 @@ public class AdminController {
                               @RequestParam(name = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                               @RequestParam(name = "department") String department,
                               @RequestParam(name = "maxStudents") Integer maxStudents,
-                              @RequestParam("files") MultipartFile files,
-                              @RequestParam("status") String status
+                              @RequestParam("files") MultipartFile files
                               ) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -402,7 +401,6 @@ public class AdminController {
             p.setDescription(description);
             p.setDepartment(department);
             p.setMaxStudents(maxStudents);
-            p.setStatus(Project.Status.valueOf(status));
             p.setStartDate(startDate);
             p.setEndDate(endDate);
             projectRepository.save(p);

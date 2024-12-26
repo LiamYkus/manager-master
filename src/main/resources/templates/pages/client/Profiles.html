@@ -249,8 +249,10 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label style="margin-left: 36px;"><input type="checkbox" id="change-password-toggle"
-                                                      onclick="togglePasswordFields(this.checked)"> Đổi mật khẩu</label>
+                                        <label style="margin-left: 36px;"><input type="checkbox"
+                                                                                 id="change-password-toggle"
+                                                                                 onclick="togglePasswordFields(this.checked)">
+                                            Đổi mật khẩu</label>
                                     </div>
 
                                     <div class="password-fields">
@@ -258,7 +260,7 @@
                                             <div class="form-group">
                                                 <label for="current_password">Mật khẩu hiện tại*</label>
                                                 <input type="password" id="current_password" name="current_password"
-                                                       placeholder="Nhập mật khẩu mới">
+                                                       placeholder="Nhập mật khẩu hiện tại">
                                             </div>
                                             <div class="form-group">
                                                 <label for="password">Mật khẩu mới*</label>
@@ -288,11 +290,28 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <div th:replace="/fragments/client/footermain :: footermain"></div>
-            </div>
+<!--            <div>-->
+<!--                <div th:replace="/fragments/client/footermain :: footermain"></div>-->
+<!--            </div>-->
         </div>
     </div>
 </div>
+<div id="footer" role="contentinfo">
+    <div class="footerExtNav">
+        <ul id="footerLinks">
+            <li><span><a href="/portal/site/!gateway">Gateway</a></span></li>
+            <li><span><a href="/portal/pda">Mobile View</a></span></li>
+            <li><span><a href="http://www.sakaiproject.org/" target="_blank">The Sakai Project</a></span></li>
+        </ul>
+    </div>
+    <div id="footerInfo">
+        <a href="http://sakaiproject.org" target="_blank">
+            <img border="0" src="/library/image/sakai_powered.gif" alt="Powered by Sakai">
+        </a>
+    </div>
+    <div class="sakaiCopyrightInfo">Hệ Thống Đào Tạo Qua Mạng - Trường Đại Học Công Nghệ TP.HCM</div>
+    <div class="serviceInfo">E-LEARNING HUTECH - TRUNK - Sakai 10.7 (Kernel 10.7)</div>
+</div>
+
 </body>
 </html>

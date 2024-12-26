@@ -99,7 +99,7 @@
                                 </style>
                                 <div class="my-tabslider-order">
                                     <div class="page-title">
-                                        <h1>Tiến độ</h1>
+                                        <h1>Đồ án của tôi</h1>
                                     </div>
                                 </div>
                                 <div class="my-account">
@@ -209,11 +209,12 @@
                                         <div class="table-order-row table-order-header">
                                             <div class="table-order-cell">STT</div>
                                             <div class="table-order-cell">Tên đề tài</div>
-                                            <div class="table-order-cell">Mô tả</div>
-                                            <div class="table-order-cell">Tuần</div>
+                                            <div class="table-order-cell">Yêu cầu</div>
+                                            <div class="table-order-cell">Ngày bắt đầu</div>
+                                            <div class="table-order-cell">Ngày kết thúc</div>
                                             <div class="table-order-cell">Thao tác</div>
                                         </div>
-                                        <th:block th:each="requirement,stt : ${weeklyRequirements}">
+                                        <th:block th:if="${projects != null}" th:each="requirement,stt : ${projects}">
                                             <div class="table-order-row">
                                                 <div class="table-order-cell">
                                                     <div class="table-order-cell-content">
@@ -238,41 +239,26 @@
                                                 </div>
                                                 <div class="table-order-cell">
                                                     <div class="table-order-cell-content">
-                                                        <div class="order-history-total-mobile" >Tuần:</div>
-                                                        <div th:text="${ 'Tuần ' + requirement.weekNumber}">
+                                                        <div class="order-history-total-mobile" >Ngày bắt đầu</div>
+                                                        <div th:text="${date}"></div>
                                                         </div>
-                                                        <div th:text="${#dates.format(requirement.startDate, 'dd-MM-yyyy')} + ' -> ' + ${#dates.format(requirement.endDate, 'dd-MM-yyyy')}">
-                                                        </div>
-                                                    </div>
                                                 </div>
                                                 <div class="table-order-cell">
-                                                    <!-- Nút Nộp Báo Cáo -->
-                                                    <button type="button" class="btn btn-primary" data-bs-toggle="collapse"
-                                                            th:attr="data-bs-target='#form-' + ${requirement.requirementId}">
-                                                        Nộp Báo Cáo
-                                                    </button>
-
-                                                    <div id="alert-container" class="mt-3"></div>
-                                                    <!-- Form Nộp Báo Cáo -->
-                                                    <div class="collapse mt-2" th:id="'form-' + ${requirement.requirementId}">
-                                                        <form th:action="@{/user/account/submit_report}" method="post" enctype="multipart/form-data">
-                                                            <input type="hidden" name="requirementId" th:value="${requirement.requirementId}"/>
-                                                            <div class="mb-2">
-                                                                <label  class="form-label">Chọn file báo cáo:</label>
-                                                                <input type="file" name="reportFile" class="form-control" required/>
-                                                            </div>
-                                                            <div class="mb-2">
-                                                                <label  class="form-label">Ghi chú:</label>
-                                                                <textarea name="comments" class="form-control" rows="2"></textarea>
-                                                            </div>
-                                                            <button type="submit" class="btn btn-success">Nộp</button>
-                                                        </form>
-                                                    </div>
+                                                    <div class="table-order-cell-content">
+                                                        <div class="order-history-total-mobile" >Ngày kết thúc</div>
+                                                        <div th:text="${requirement.endDate}"></div>
+                                                        </div>
+                                                </div>
+                                                <div class="table-order-cell">
+                                                    <div class="table-order-cell-content">
+                                                        <div class="order-history-total-mobile" >Trạng thái</div>
+                                                        <div th:text="${status}"></div>
+                                                        </div>
                                                 </div>
                                             </div>
                                         </th:block>
-                                        <tr th:if="${#lists.isEmpty(weeklyRequirements)}">
-                                            <td colspan="4" class="text-muted text-center">No Data</td>
+                                        <tr th:if="${#lists.isEmpty(projects)}">
+                                            <td colspan="4" class="text-muted text-center">Chưa có đồ án nào...</td>
                                         </tr>
                                     </div>
 

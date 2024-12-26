@@ -152,7 +152,7 @@ public class CustomerInfomationController {
         model.addAttribute("date", date);
         model.addAttribute("status", status);
         model.addAttribute("projects", p);
-        return "pages/client/Project";
+        return "pages/client/ProjectHistory";
     }
 
     @GetMapping("/user/account/weekly")
