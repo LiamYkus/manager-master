@@ -1,5 +1,6 @@
 package com.manager.repository;
 
+import com.manager.DTO.ProjectDTO;
 import com.manager.model.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -7,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -15,9 +18,15 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query(value = "SELECT * FROM project where project_id = ?1",nativeQuery = true)
     Project findProjectById(Long id);
 
+    @Transactional
     @Modifying
-    @Query(value = "DELETE FROM project where project_id = ?1",nativeQuery = true)
-    void deleteByID(@Param("projectId") Long projectId);
+    @Query(value = "DELETE FROM weekly_requirements WHERE project_id = :projectId", nativeQuery = true)
+    void deleteWeeklyRequirementsByProjectId(@Param("projectId") Long projectId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM project WHERE project_id = :projectId", nativeQuery = true)
+    void deleteProjectById(@Param("projectId") Long projectId);
 
     @Query(value = "SELECT * FROM project WHERE status = N'Đang tiến hành' or status = N'Hủy';",nativeQuery = true)
     List<Project> findAllByStatus();
@@ -75,4 +84,18 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "  AND pr.status = 'ChoXacNhan';",nativeQuery = true)
     Integer findAllProjectConfirmss(Long id);
 
+    @Query(value = "SELECT project.project_id, project.title, project.start_date, project.end_date, project.status FROM project WHERE (project.start_date BETWEEN :startDate AND :endDate) OR (project.end_date BETWEEN :startDate AND :endDate)", nativeQuery = true)
+    List<Object[]> findAllByStartDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query(value = "SELECT project.project_id, project.title, project.start_date, project.end_date, project.status FROM project ", nativeQuery = true)
+    List<Object[]> findAllProject();
+
+    @Query("SELECT COUNT(p) FROM Project p")
+    Long countAllProjects();
+
+    @Query("SELECT COUNT(p) FROM Project p WHERE p.status = 'HoanThanh'")
+    Long countCompletedProjects();
+
+    @Query("SELECT COUNT(p) FROM Project p WHERE p.status != 'HoanThanh'")
+    Long countIncompleteProjects();
 }

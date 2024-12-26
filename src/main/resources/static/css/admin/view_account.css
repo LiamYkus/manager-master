@@ -1,5 +1,5 @@
 :root {
-    --main-color: #407225;
+    --main-color: #009DCE;
     --color-dark: #1D2231;
     --text-gray: #8390A2;
 }
@@ -18,7 +18,7 @@ h3 {
 }
 
 .sidebar  {
-    width: 345px;
+    width: 293px;
     position: fixed;
     left: 0;
     top: 0;
@@ -98,7 +98,7 @@ h3 {
 
 .main-content {
     transition: margin-left 300ms;
-    margin-left: 345px;
+    margin-left: 293px;
 }
 
 header {
@@ -108,8 +108,8 @@ header {
     padding: 1rem 1.5rem;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     position: fixed;
-    left: 345px;
-    width: calc(100% - 345px);
+    left: 293px;
+    width: calc(100% - 293px);
     top: 0;
     z-index: 100;
     transition: left 300ms;
@@ -444,7 +444,7 @@ h2 {
     align-items: center;
     justify-content: center;
     padding: 0.7rem 1.5rem;
-    background-color: #407225;
+    background-color: #009DCE;
     color: #fff;
     font-size: 1rem;
     font-weight: 500;

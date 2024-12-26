@@ -1,6 +1,7 @@
 package com.manager.service;
 
 import com.manager.DTO.ProjectConfirm;
+import com.manager.DTO.ProjectDTO;
 import com.manager.DTO.WeeklyProject;
 import com.manager.model.Project;
 import com.manager.model.ProjectRegistration;
@@ -11,6 +12,7 @@ import com.manager.repository.ProjectRepository;
 import com.manager.repository.UserRepository;
 import com.manager.repository.WeeklyRequirementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
@@ -67,17 +69,6 @@ public class ProjectService {
         }
     }
 
-    public void deleteProject(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Project ID cannot be null");
-        }
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project with ID " + id + " does not exist!"));
-
-        weeklyRequirementRepository.deleteByProjectId(project.getProjectId());
-        projectRepository.deleteByID(project.getProjectId());
-    }
-
     public List<ProjectConfirm> getAllProjectsConfirm(Long id) {
         List<Object[]> results = projectRepository.findAllProjectConfirm(id);
         List<ProjectConfirm> projectConfirms = new ArrayList<>();
@@ -121,5 +112,39 @@ public class ProjectService {
         }
 
         return weeks;
+    }
+
+    public List<ProjectDTO> getAllProjectsConfirm() {
+        List<Object[]> results = projectRepository.findAllProject();
+        List<ProjectDTO> projectConfirms = new ArrayList<>();
+
+        for (Object[] result : results) {
+            ProjectDTO custom = new ProjectDTO(
+                    ((Number) result[0]).longValue(),
+                    (String) result[1],
+                    (Date) result[2],
+                    (Date) result[3],
+                    (String) result[4]
+            );
+            projectConfirms.add(custom);
+        }
+        return projectConfirms;
+    }
+
+    public List<ProjectDTO> getAllProjects(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate) {
+        List<Object[]> results = projectRepository.findAllByStartDateBetween(startDate, endDate);
+        List<ProjectDTO> projectConfirms = new ArrayList<>();
+
+        for (Object[] result : results) {
+            ProjectDTO custom = new ProjectDTO(
+                    ((Number) result[0]).longValue(),
+                    (String) result[1],
+                    (Date) result[2],
+                    (Date) result[3],
+                    (String) result[4]
+            );
+            projectConfirms.add(custom);
+        }
+        return projectConfirms;
     }
 }

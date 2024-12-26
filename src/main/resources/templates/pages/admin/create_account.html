@@ -22,7 +22,7 @@
             <label for="nav-toggle">
                 <span class="las la-bars"></span>
             </label>
-            Dashboard
+            Thêm tài khoản
         </h2>
 
 
@@ -40,34 +40,33 @@
             <form action="/admin/create-account" method="post">
                 <div class="form first">
                     <div class="details personal">
-                        <span class="title">Thêm tài khoản</span>
 
                         <div class="fields" th:object="${user}">
                             <div class="input-field">
-                                <label>First Name</label>
-                                <input th:field="*{firstName}" type="text" placeholder="Enter your first name" required>
+                                <label>Họ</label>
+                                <input th:field="*{firstName}" type="text" placeholder="Nhập họ" required>
                                 <div class="error-msg">
                                     <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}"></p>
 
                                 </div>
                             </div>
                             <div class="input-field">
-                                <label>Last Name</label>
-                                <input th:field="*{lastName}" type="text" placeholder="Enter your last name" required>
+                                <label>Tên</label>
+                                <input th:field="*{lastName}" type="text" placeholder="Nhập tên" required>
                                 <div class="error-msg">
                                     <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}"></p>
                                 </div>
                             </div>
 
                             <div class="input-field">
-                                <label>Date of Birth</label>
-                                <input name="date" type="date" placeholder="Enter birth date" required>
+                                <label>Ngày sinh</label>
+                                <input name="date" type="date" placeholder="Nhập ngày sinh" required>
                                 <div class="error-msg"></div>
                             </div>
 
                             <div class="input-field">
                                 <label>Email</label>
-                                <input th:field="*{email}" type="email" placeholder="Enter your email" required>
+                                <input th:field="*{email}" type="email" placeholder="Nhập email" required>
                                 <div class="error-msg">
                                     <p th:each="err : ${#fields.errors('email')}" th:text="${err}"></p>
 
@@ -75,16 +74,16 @@
                             </div>
 
                             <div class="input-field">
-                                <label>Mobile Number</label>
-                                <input th:field="*{phoneNumber}" type="text" placeholder="Enter mobile number"
+                                <label>Số điện thoại</label>
+                                <input th:field="*{phoneNumber}" type="text" placeholder="Nhập số điện thoại"
                                        required>
                                 <div class="error-msg">
                                     <p th:each="err : ${#fields.errors('phoneNumber')}" th:text="${err}"></p>
                                 </div>
                             </div>
                             <div class="input-field">
-                                <label>Address</label>
-                                <input th:field="*{address}" type="text" placeholder="Enter address"
+                                <label>Địa chỉ</label>
+                                <input th:field="*{address}" type="text" placeholder="Nhập địa chỉ"
                                        required>
                                 <div class="error-msg">
                                     <p th:each="err : ${#fields.errors('address')}" th:text="${err}"></p>
@@ -92,17 +91,17 @@
                             </div>
 
                             <div class="input-field">
-                                <label>Gender</label>
+                                <label>Giới tính</label>
                                 <select th:field="*{gender}" required>
                                     <!--                  <option disabled selected>Select gender</option>-->
-                                    <option value="true">Male</option>
-                                    <option value="false">Female</option>
+                                    <option value="true">Nam</option>
+                                    <option value="false">Nữ</option>
                                 </select>
                                 <div class="error-msg"></div>
                             </div>
 
                             <div class="input-field">
-                                <label>Role</label>
+                                <label>Phân quyền</label>
                                 <select name="role_id" required>
 <!--                                    <option disabled selected>Select Role</option>-->
                                     <option th:each="role : ${roles}" th:value="${role.id}"
@@ -116,7 +115,7 @@
 
                     <div class="details ID">
                         <button class="nextBtn">
-                            <span class="btnText">Submit</span>
+                            <span class="btnText">Xác nhận</span>
                             <i class="uil uil-navigator"></i>
                         </button>
                         <img th:if="${success}" src="/image/success.png">

@@ -22,7 +22,7 @@
             <label for="nav-toggle">
                 <span class="las la-bars"></span>
             </label>
-            Dashboard
+            Sửa đồ án
         </h2>
 
 
@@ -43,8 +43,6 @@
                   enctype="multipart/form-data">
                 <div class="form first">
                     <div class="details personal">
-                        <span class="title" th:text="${project.projectId == null} ? 'Thêm đồ án' : 'Sửa đồ án'"></span>
-
                         <div class="fields">
                             <input type="hidden" th:field="*{projectId}" th:value="${project?.projectId}" />
 
@@ -74,9 +72,9 @@
                             </div>
 
                             <div class="input-field">
-                                <label>File</label>
-                                <input type="file" class="form-control-file" id="p_imageUrl" name="file"
-                                       accept="image/*" required>
+                                <label>Files</label>
+                                <input type="file" class="form-control-file" id="p_imageUrl" name="files"
+                                       required>
                             </div>
 
                             <div class="input-field">

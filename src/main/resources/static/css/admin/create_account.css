@@ -1,5 +1,5 @@
 :root {
-    --main-color: #407225;
+    --main-color: #009DCE;
     --color-dark: #1D2231;
     --text-gray: #8390A2;
 }
@@ -18,7 +18,7 @@ h3 {
 }
 
 .sidebar  {
-    width: 345px;
+    width: 293px;
     position: fixed;
     left: 0;
     top: 0;
@@ -98,7 +98,7 @@ h3 {
 
 .main-content {
     transition: margin-left 300ms;
-    margin-left: 345px;
+    margin-left: 293px;
 }
 
 header {
@@ -108,8 +108,8 @@ header {
     padding: 1rem 1.5rem;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     position: fixed;
-    left: 345px;
-    width: calc(100% - 345px);
+    left: 293px;
+    width: calc(100% - 293px);
     top: 0;
     z-index: 100;
     transition: left 300ms;
@@ -380,5 +380,131 @@ h2, .title, label {
     height: auto;
     margin: 5px 0;
 }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.main-content {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 24px;
+    color: #2575fc;
+    margin: 0;
+}
+
+.user-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.user-wrapper img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-wrapper h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.user-wrapper small {
+    color: #777;
+}
+
+.container {
+    max-width: 600px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.details {
+    margin-bottom: 20px;
+}
+
+.details .title {
+    font-size: 20px;
+    color: #2575fc;
+    margin-bottom: 15px;
+}
+
+.fields {
+    display: flex;
+    gap: 20px;
+}
+
+.input-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-field label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.input-field select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+.input-field select:focus {
+    border-color: #2575fc;
+    outline: none;
+}
+
+.details.ID {
+    text-align: center;
+}
+
+.details.ID button {
+    background-color: #ff4d4d;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.details.ID button:hover {
+    background-color: #e63939;
+}
+
+img[th\:if="${success}"] {
+    display: block;
+    margin: 20px auto;
+    max-width: 100px;
+}
+
 
 

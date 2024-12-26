@@ -21,7 +21,7 @@
             <label for="nav-toggle">
                 <span class="las la-bars"></span>
             </label>
-            Dashboard
+            Danh sách đồ án
         </h2>
 
 
@@ -42,11 +42,11 @@
                         <form id="frm" action="/admin/Assignment/view-assignment" method="get">
                             <div class="search-wrapper">
                                 <span class="las la-search"></span>
-                                <input type="search" name="email" placeholder="Search here">
+                                <input type="search" name="email" placeholder="Tìm kiếm...">
                             </div>
                             <div class="dropdown-role" style="float: right">
                                 <select name="role-id" class="dropdown-box" onchange="changeRole()">
-                                    <option class="option" value="0">All</option>
+                                    <option class="option" value="0">Tất cả</option>
 
                                 </select>
                             </div>
@@ -62,7 +62,7 @@
                             <th style="margin-right: 8px; text-align: center">Ngày bắt đầu</th>
                             <th style="margin-right: 8px; text-align: center">Ngày kết thúc</th>
                             <th style="margin-right: 8px; text-align: center">Giảng viên</th>
-                            <th style="margin-right: 8px; text-align: center">Actions</th>
+                            <th style="margin-right: 8px; text-align: center">Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -74,7 +74,9 @@
                             <td style="margin-right: 8px; text-align: center" th:text="${project.first_name + ' ' + project.last_name}"></td>
                             <td style="margin-right: 8px; text-align: center">
                                 <a th:href="@{'/admin/Assignment/edit?id=' + ${project.id}}">Sửa</a>
-                                <a onclick="return confirm('Bạn có chắc chắn?')">Xóa</a>
+                                <a th:href="@{'/admin/Assignment/delete?id=' + ${project.id}}"
+                                        class="btn btn-delete"
+                                        onclick="return confirm('Bạn có chắc chắn?')">Xóa</a>
                             </td>
                         </tr>
                         </tbody>

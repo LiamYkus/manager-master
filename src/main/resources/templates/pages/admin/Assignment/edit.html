@@ -21,7 +21,7 @@
             <label for="nav-toggle">
                 <span class="las la-bars"></span>
             </label>
-            Dashboard
+            Phân công
         </h2>
 
 
@@ -42,32 +42,36 @@
                   enctype="multipart/form-data">
                 <div class="form first">
                     <div class="details personal">
-                        <span class="title" th:text="${project.id == null} ? 'Thêm đồ án' : 'Sửa đồ án'"></span>
+                        <span class="title" th:text="${project.project.projectId == null} ? 'Thêm đồ án' : 'Sửa đồ án'"></span>
 
                         <div class="fields">
                             <input type="hidden" th:field="*{assignmentId}" th:value="${project?.assignmentDate}" />
 
                             <div class="input-field">
                                 <label>Giảng viên phụ trách</label>
-                                <select class="form-control" id="lecturer" name="lecturer" th:value="${project?.lecturer}" required>
-                                    <th:block th:each="c : ${lecturer}">
-                                        <option th:value="${c.id}" th:text="${c.getFirstName()}">
-                                        </option>
-                                    </th:block>
+                                <select class="form-control" id="lecturer" name="lecturer" required>
+                                    <option value="" disabled selected>Chọn giảng viên</option>
+                                    <option th:each="lecturer : ${lecturer}"
+                                            th:value="${lecturer.id}"
+                                            th:selected="${project?.lecturer?.id == lecturer.id}"
+                                            th:text="${lecturer.firstName + ' ' + lecturer.lastName}">
+                                    </option>
                                 </select>
                             </div>
 
+
                             <div class="input-field">
-                                <label for="projects">Tên đồ án</label> <select class="form-control"
-                                                                                id="projects"
-                                                                                name="projects"
-                                                                                th:value="${project?.project}" required>
-                                <th:block th:each="c : ${projects}">
-                                    <option th:value="${c.projectId}" th:text="${c.getTitle()}">
+                                <label for="projects">Tên đồ án</label>
+                                <select class="form-control" id="projects" name="projects" required>
+                                    <option value="" disabled selected>Chọn đồ án</option>
+                                    <option th:each="projectItem : ${projects}"
+                                            th:value="${projectItem.projectId}"
+                                            th:selected="${project?.project?.projectId == projectItem.projectId}"
+                                            th:text="${projectItem.title}">
                                     </option>
-                                </th:block>
-                            </select>
+                                </select>
                             </div>
+
                         </div>
                     </div>
 
@@ -76,7 +80,6 @@
                             <span class="btnText">Lưu</span>
                             <i class="uil uil-navigator"></i>
                         </button>
-                        <img th:if="${success}" src="/image/success.png">
                     </div>
                 </div>
             </form>

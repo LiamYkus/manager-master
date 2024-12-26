@@ -8,8 +8,8 @@
 <body>
 <div class="sidebar" th:fragment="sidebar">
     <div class="sidebar-brand" style="margin-bottom: 30px">
-        <img style="width: 282px; height: 60px; object-fit: cover; border-radius: 8px"
-             src="https://phuongnamvina.com/img_data/images/logo-truong.jpg">
+        <img style="width: 240px; height: auto; object-fit: cover; border-radius: 8px; margin-top: 10px"
+             th:src="@{/image/photo_2024-12-19_01-26-03.jpg}">
     </div>
 
     <div class="sidebar-menu">
@@ -26,10 +26,6 @@
                 <a href="/admin/view-account"><span class="las la-user-circle"></span>
                     <span>Danh sách tài khoản</span></a>
             </li>
-<!--            <li data-page="/admin/Project/create-project">-->
-<!--                <a href="/admin/Project/create-project"><span class="las la-user-astronaut"></span>-->
-<!--                    <span>Thêm đồ án</span></a>-->
-<!--            </li>-->
             <li>
                 <a href="/admin/Project/view-project"><span class="las la-shopping-bag"></span>
                     <span>Danh sách đồ án</span></a>
@@ -38,10 +34,6 @@
                 <a href="/admin/Assignment/view-assignment"><span class="las la-user-tag"></span>
                     <span>Danh sách phân công</span></a>
             </li>
-<!--            <li>-->
-<!--                <a href="/admin/Assignment/create-assignment"><span class="las la-user-tag"></span>-->
-<!--                    <span>Phân công</span></a>-->
-<!--            </li>-->
             <li>
                 <a href="/perform_logout"><span class="las la-sign-out-alt"></span>
                     <span>Đăng xuất</span></a>

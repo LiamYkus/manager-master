@@ -22,7 +22,7 @@
             <label for="nav-toggle">
                 <span class="las la-bars"></span>
             </label>
-            Dashboard
+            Danh sách tài khoản
         </h2>
 
 
@@ -43,11 +43,11 @@
                             <form id="frm" action="/admin/view-account" method="get">
                                 <div class="search-wrapper">
                                     <span class="las la-search"></span>
-                                    <input type="search" th:value="${email}" name="email" placeholder="Search here">
+                                    <input type="search" th:value="${email}" name="email" placeholder="Tìm kiếm...">
                                 </div>
                                 <div class="dropdown-role" style="float: right">
                                     <select name="role-id" class="dropdown-box" onchange="changeRole()">
-                                        <option class="option" value="0">All</option>
+                                        <option class="option" value="0">Tất cả</option>
                                         <option th:each="role: ${roles}" th:if="${id == role.id}" selected th:text="${role.roleName}" class="option" th:value="${role.id}"></option>
                                         <option th:each="role: ${roles}" th:if="${!(id == role.id)}"  th:text="${role.roleName}" class="option" th:value="${role.id}"></option>
 
@@ -60,12 +60,12 @@
                         <table width="100%">
                             <thead>
                             <tr>
-                                <th style="margin-right: 3px">UserID</th>
-                                <th style="margin-right: 3px">Full Name</th>
+                                <th style="margin-right: 3px">ID</th>
+                                <th style="margin-right: 3px">Tên</th>
                                 <th style="margin-right: 3px">Email</th>
-                                <th style="margin-right: 3px">Role</th>
-                                <th style="margin-right: 3px">Status</th>
-                                <th style="margin-right: 3px">Actions</th>
+                                <th style="margin-right: 3px">Quyền</th>
+                                <th style="margin-right: 3px">Trạng thái</th>
+                                <th style="margin-right: 3px">Thao tác</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -76,9 +76,9 @@
                                 <td th:text="${item.role.roleName}"></td>
                                 <td th:text="${item.active ? 'Active' : 'Inactive'}"></td>
                                 <td>
-                                    <a th:href="@{/admin/view-detail(id=${item.id})}" class="btn btn-primary">View</a>
-                                    <a th:href="@{/admin/activate(id=${item.id})}" th:if="${item.active}" class="btn btn-success">Deactivate</a>
-                                    <a th:href="@{/admin/activate(id=${item.id})}" th:if="${!item.active}" class="btn btn-success">Activate</a>
+                                    <a th:href="@{/admin/view-detail(id=${item.id})}" class="btn btn-primary">Xem</a>
+                                    <a th:href="@{/admin/activate(id=${item.id})}" th:if="${item.active}" class="btn btn-success">Vô hiệu hóa</a>
+                                    <a th:href="@{/admin/activate(id=${item.id})}" th:if="${!item.active}" class="btn btn-success">Kích hoạt</a>
                                 </td>
                             </tr>
                             </tbody>

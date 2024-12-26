@@ -3,6 +3,7 @@ package com.manager.controller.admin;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.manager.DTO.LecturerProjectCustom;
+import com.manager.DTO.ProjectDTO;
 import com.manager.FileService.CloudinaryService;
 import com.manager.FileService.StorageService;
 import com.manager.model.*;
@@ -13,6 +14,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -82,6 +84,8 @@ public class AdminController {
     private Cloudinary cloudinary;
     @Autowired
     private CloudinaryService cloudinaryService;
+    @Autowired
+    private ProjectLecturerRepository projectLecturerRepository;
 
     @GetMapping("/admin")
     public String index(Model model, Principal principal) {
@@ -89,9 +93,44 @@ public class AdminController {
         List<User> admins = userRepository.findAllByRole(roleRepository.findByRoleName("Admin"));
         List<User> users = userRepository.findAll();
         users.removeAll(admins);
+        List<Project> projects = projectRepository.findAll();
+        Long totalUser = userRepository.countAllUsers();
+        Long totalUserStudent = userRepository.countStudentUsers();
+        Long totalUserLecturer = userRepository.countLecturerUsers();
+        Long totalProject = projectRepository.countAllProjects();
+        Long totalProjectIncomplete = projectRepository.countIncompleteProjects();
+        Long totalProjectCompleted = projectRepository.countCompletedProjects();
+        model.addAttribute("totalUser", totalUser);
+        model.addAttribute("totalUserStudent", totalUserStudent);
+        model.addAttribute("totalUserLecturer", totalUserLecturer);
+        model.addAttribute("totalProject", totalProject);
+        model.addAttribute("totalProjectIncomplete", totalProjectIncomplete);
+        model.addAttribute("totalProjectCompleted", totalProjectCompleted);
         model.addAttribute("user", user);
         model.addAttribute("users", users);
+        model.addAttribute("projects", projects);
         return "pages/admin/dashboard";
+    }
+
+    @GetMapping("/admin/projects")
+    @ResponseBody
+    public List<ProjectDTO> getAllProjects() {
+        List<ProjectDTO> projectDTO = projectService.getAllProjectsConfirm();
+        return projectDTO;
+    }
+
+    @GetMapping("/admin/projects/filter")
+    @ResponseBody
+    public List<ProjectDTO> filterProjects(
+            @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        if (startDate == null || endDate == null) {
+            // Nếu không có khoảng thời gian, trả về tất cả các dự án
+            return projectService.getAllProjectsConfirm();
+        }
+        List<ProjectDTO> projects = projectService.getAllProjects(startDate, endDate);
+        // Lọc dự án theo khoảng thời gian
+        return new ArrayList<>(projects);
     }
 
     @GetMapping("/admin/create-account")
@@ -267,6 +306,17 @@ public class AdminController {
         return "pages/admin/Assignment/edit";
     }
 
+    @GetMapping("/admin/Assignment/delete")
+    public String deleteAssignment(@RequestParam("id") Long id) {
+        try {
+            projectLecturerRepository.deleteById(id);
+
+            return "redirect:/admin/Assignment/view-assignment";
+        } catch (Exception e) {
+            return "redirect:/admin/Assignment/view-assignment";
+        }
+    }
+
     @GetMapping("/admin/Project/create-project")
     public String addProjectForm(Model model,
                                  @RequestParam(name = "success", defaultValue = "false") boolean success) {
@@ -287,7 +337,8 @@ public class AdminController {
                               @RequestParam(name = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                               @RequestParam(name = "department") String department,
                               @RequestParam(name = "maxStudents") Integer maxStudents,
-                              @RequestParam("files") MultipartFile files
+                              @RequestParam("files") MultipartFile files,
+                              @RequestParam("status") String status
                               ) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -304,19 +355,20 @@ public class AdminController {
         if (totalDays < 7) {
             throw new IllegalArgumentException("Khoảng thời gian không đủ để tạo một tuần báo cáo!");
         }
-
-        String fileUrl = cloudinaryService.uploadFile(files);
+        if(!projectId.isPresent()){
+            String fileUrl = cloudinaryService.uploadFile(files);
 //        storageService.store(files);
-        p.setFile(fileUrl);
-        p.setTitle(title);
-        p.setCreatedBy(u);
-        p.setDescription(description);
-        p.setDepartment(department);
-        p.setMaxStudents(maxStudents);
-        p.setStatus(Project.Status.ChuaTienHanh);
-        p.setStartDate(startDate);
-        p.setEndDate(endDate);
-        projectRepository.save(p);
+            p.setFile(fileUrl);
+            p.setTitle(title);
+            p.setCreatedBy(u);
+            p.setDescription(description);
+            p.setDepartment(department);
+            p.setMaxStudents(maxStudents);
+            p.setStatus(Project.Status.ChuaTienHanh);
+            p.setStartDate(startDate);
+            p.setEndDate(endDate);
+            projectRepository.save(p);
+
 
         // Tính số tuần và chia ngày theo tuần
         int weekCount = (int) Math.ceil((double) totalDays / 7);
@@ -341,7 +393,34 @@ public class AdminController {
             weeklyRequirementRepository.save(weeklyRequirement);
             currentStartDate = currentEndDate.plusDays(1);
         }
+        }else {
+            String fileUrl = cloudinaryService.uploadFile(files);
+//        storageService.store(files);
+            p.setFile(fileUrl);
+            p.setTitle(title);
+            p.setCreatedBy(u);
+            p.setDescription(description);
+            p.setDepartment(department);
+            p.setMaxStudents(maxStudents);
+            p.setStatus(Project.Status.valueOf(status));
+            p.setStartDate(startDate);
+            p.setEndDate(endDate);
+            projectRepository.save(p);
+        }
         return "redirect:/admin/Project/view-project";
+    }
+
+    @GetMapping("/admin/Project/delete")
+    public String deleteProject(@RequestParam("id") Long id) {
+        try {
+
+            projectRepository.deleteWeeklyRequirementsByProjectId(id);
+            projectRepository.deleteProjectById(id);
+
+            return "redirect:/admin/Project/view-project";
+        } catch (Exception e) {
+            return "redirect:/admin/Project/view-project";
+        }
     }
 
     @GetMapping("/admin/Project/edit")
@@ -354,12 +433,6 @@ public class AdminController {
         model.addAttribute("list_user", list_user);
         model.addAttribute("project", p);
         return "pages/admin/Project/edit_project";
-    }
-
-    @GetMapping("/admin/Project/delete")
-    public String deleteProject(@RequestParam(name = "id") long id) {
-        projectService.deleteProject(id);
-        return "redirect:/admin/Project/view-project";
     }
 
     @GetMapping("/admin/view-detail")

@@ -21,7 +21,7 @@
             <label for="nav-toggle">
                 <span class="las la-bars"></span>
             </label>
-            Dashboard
+            Danh sách đồ án
         </h2>
 
 
@@ -40,58 +40,29 @@
                 <form id="frm" action="/admin/Project/view-project" method="get">
                     <div class="search-wrapper">
                         <span class="las la-search"></span>
-                        <input type="search" th:value="${email}" name="email" placeholder="Search here">
+                        <input type="search" th:value="${email}" name="email" placeholder="Tìm kiếm...">
                     </div>
                 </form>
                 <div class="dropdown-role">
                     <select name="role-id" onchange="changeRole()">
-                        <option value="0">All</option>
+                        <option value="0">Tất cả</option>
                         <option th:each="role : ${roles}" th:text="${role.roleName}" th:value="${role.id}"></option>
                     </select>
                 </div>
             </div>
             <div class="list-accounts">
                 <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-                    <a href="/admin/Project/create-project" class="btn btn-add" style="background-color: #197a35; color: #fff; padding: 8px 12px; border-radius: 5px; text-decoration: none;">
+                    <a href="/admin/Project/create-project" class="btn btn-add"
+                       style="background-color: #009DCE; color: #fff; padding: 8px 12px; border-radius: 5px; text-decoration: none;">
                         + Thêm đồ án
                     </a>
                 </div>
                 <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
-                    <a href="/admin/Assignment/create-assignment" class="btn btn-add" style="background-color: #197a35; color: #fff; padding: 8px 12px; border-radius: 5px; text-decoration: none;">
+                    <a href="/admin/Assignment/create-assignment" class="btn btn-add"
+                       style="background-color: #009DCE; color: #fff; padding: 8px 12px; border-radius: 5px; text-decoration: none;">
                         Phân công
                     </a>
                 </div>
-
-                <!-- Popup Modal -->
-<!--                <div id="modal" class="modal">-->
-<!--                    <div class="modal-content">-->
-<!--                        <span class="close" id="closeModalBtn">&times;</span>-->
-<!--                        <h2>Thêm đồ án</h2>-->
-<!--                        <form id="projectForm" method="post" enctype="multipart/form-data"-->
-<!--                              th:action="@{/admin/Project/create-project}">-->
-
-<!--                            <label for="title" style="color: #0D0E0F">Tên đồ án</label>-->
-<!--                            <input type="text" id="title" name="title" placeholder="Nhập tên đồ án" required>-->
-
-<!--                            <label for="startDate" style="color: #0D0E0F">Ngày bắt đầu</label>-->
-<!--                            <input type="date" id="startDate" name="startDate" required>-->
-
-<!--                            <label for="endDate" style="color: #0D0E0F">Ngày kết thúc</label>-->
-<!--                            <input type="date" id="endDate" name="endDate" required>-->
-
-<!--                            <label for="department" style="color: #0D0E0F">Khoa</label>-->
-<!--                            <input type="text" id="department" name="department" placeholder="Nhập khoa" required>-->
-
-<!--                            <label style="color: #0D0E0F">Files</label>-->
-<!--                            <input type="file" id="fileInput" name="files" multiple/>-->
-
-<!--                            <label for="description">Mô tả</label>-->
-<!--                            <textarea id="description" placeholder="Nhập mô tả"></textarea>-->
-
-<!--                            <button type="submit" class="btn btn-submit">Lưu</button>-->
-<!--                        </form>-->
-<!--                    </div>-->
-<!--                </div>-->
                 <table>
                     <thead>
                     <tr>
@@ -102,7 +73,7 @@
                         <th>Ngày kết thúc</th>
                         <th>Trạng thái</th>
                         <th>file</th>
-                        <th>Actions</th>
+                        <th>Thao tác</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -122,10 +93,12 @@
                         </td>
                         <td>
                             <a th:href="@{'/admin/Project/edit?id=' + ${project.projectId}}"
-                               class="btn btn-edit">Sửa</a>
+                               class="btn btn-edit" th:if="${project.status.name() == 'ChuaTienHanh'}">Sửa</a>
                             <a th:href="@{'/admin/Project/delete?id=' + ${project.projectId}}"
                                class="btn btn-delete"
-                               onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+                               onclick="return confirm('Bạn có chắc chắn muốn xóa?');"
+                               th:if="${project.status.name() == 'ChuaTienHanh'}"
+                            >Xóa</a>
                         </td>
                     </tr>
                     </tbody>
