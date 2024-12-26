@@ -156,8 +156,9 @@
                                                 >Đăng ký</a>
                                             </td>
                                         </tr>
-                                        <tr th:if="${#lists.isEmpty(projects)}">
-                                            <td colspan="5" class="text-center text-muted">Chưa có đồ án nào</td>
+                                        <tr th:each="i : ${#numbers.sequence(1, 10 - #lists.size(projects))}"
+                                            th:if="${#lists.size(projects) < 10}">
+                                            <td colspan="4" class="text-center text-muted" style="height: 52px;"></td>
                                         </tr>
                                         </tbody>
                                     </table>
