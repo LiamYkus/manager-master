@@ -10,14 +10,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -54,6 +58,10 @@ public class StudentController {
     private LecturerProjectRepository lecturerProjectRepository;
     @Autowired
     private LecturerProjectService lecturerProjectService;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private DefaultUserService userService;
 
     @GetMapping("/lecturer")
     public String getDashBoard(Model model) {
@@ -68,6 +76,85 @@ public class StudentController {
         model.addAttribute("counts", pj);
         model.addAttribute("projects", project);
         return "pages/lecturer/dashboard";
+    }
+
+    @GetMapping("/lecturer/profile")
+    public String showProfile(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            Calendar cal = Calendar.getInstance();
+            if (user.getDob() != null) {
+                cal.setTime(user.getDob());
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+                int month = cal.get(Calendar.MONTH);
+                int year = cal.get(Calendar.YEAR);
+                model.addAttribute("day", day);
+                model.addAttribute("month", month + 1);
+                model.addAttribute("year", year);
+            }
+        }
+        model.addAttribute("user", user);
+        return "pages/lecturer/Profiles";
+    }
+
+    @PostMapping("/lecturer/profile")
+    public String updateProfile(@RequestParam(name = "id") Long id,
+                                @RequestParam(name = "lastname") String lastname,
+                                @RequestParam(name = "firstname") String firstname,
+                                @RequestParam(name = "telephone") String phone,
+                                @RequestParam(name = "email") String email,
+                                @RequestParam(name = "gender-radio") String gender,
+                                @RequestParam(name = "day") String day,
+                                @RequestParam(name = "month") String month,
+                                @RequestParam(name = "year") String year,
+                                @RequestParam(name = "current_password") String oldPass,
+                                @RequestParam(name = "password") String newPass,
+                                @RequestParam(name = "confirmation") String confirm,
+                                @RequestParam(name = "change_password") Optional<String> check,
+                                @RequestParam(name = "department") String department,
+                                @RequestParam(name = "code") String code
+            , HttpServletRequest request, HttpServletResponse response, Model model) {
+        User user = userRepository.findById(id).get();
+        String date_String = year + "-" + day + "-" + month;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-dd-MM");
+        try {
+            formatter.setLenient(false);
+            Date date = formatter.parse(date_String);
+            user.setDob(date);
+        } catch (ParseException e) {
+            model.addAttribute("error", "date wrong!");
+            return showProfile(model);
+        }
+        if (check.isPresent()) {
+            if (oldPass != null && BCrypt.checkpw(oldPass, user.getPassword())) {
+                if (newPass.equals(confirm)) {
+                    user.setPassword(BCrypt.hashpw(newPass, BCrypt.gensalt()));
+                } else {
+                    model.addAttribute("error", "Password and Re-Password not match");
+                    return showProfile(model);
+                }
+            } else {
+                model.addAttribute("error", "Old Password is wrong!");
+                return showProfile(model);
+            }
+        }
+        user.setRole(roleRepository.findByRoleName("Lecturer"));
+        try {
+            userService.addUser(user);
+        } catch (Exception ex) {
+
+        }
+        user.setCode(code);
+        user.setDepartment(department);
+        user.setFirstName(firstname);
+        user.setLastName(lastname);
+        user.setPhoneNumber(phone);
+        user.setEmail(email);
+        user.setGender(gender.equalsIgnoreCase("male"));
+        model.addAttribute("report", "Save successful!!");
+        return showProfile(model);
     }
 
     @GetMapping("/lecturer/list_StudentWeeklyReport")
