@@ -1,6 +1,8 @@
 package com.manager.controller.client;
 
 import com.manager.DTO.GradeStudent;
+import com.manager.DTO.ProjectGradeDTO;
+import com.manager.DTO.ProjectGradeWeekDTO;
 import com.manager.DTO.WeeklyProject;
 import com.manager.FileService.StorageService;
 import com.manager.model.*;
@@ -59,6 +61,10 @@ public class CustomerInfomationController {
     private EvaluationRepository evaluationRepository;
     @Autowired
     private EvaluationService evaluationService;
+    @Autowired
+    private ProjectGradeService projectGradeService;
+    @Autowired
+    private ProjectGradeRepository projectGradeRepository;
 
 
     @GetMapping("/user/account/profile")
@@ -141,15 +147,20 @@ public class CustomerInfomationController {
             return "redirect:/login";
         }
         Project p = projectService.getAllProjectsByStatus(u.getId());
+        Integer grade = null;
+        if (p != null) {
+            grade = projectGradeRepository.findStudentID(p.getProjectId());
+        }
         String date = null;
         String status = null;
         ProjectRegistration pr = projectRegistrationRepository.findAllProjectByStatus(u.getId());
         SimpleDateFormat formattedDate = new SimpleDateFormat("yyyy-MM-dd");
-        if(pr != null){
+        if (pr != null) {
             date = formattedDate.format(pr.getRegistrationDate());
             status = String.valueOf(pr.getStatus());
         }
         model.addAttribute("date", date);
+        model.addAttribute("grade", grade);
         model.addAttribute("status", status);
         model.addAttribute("projects", p);
         return "pages/client/ProjectHistory";
@@ -224,7 +235,7 @@ public class CustomerInfomationController {
         }
         Set<Notification> list_notify = notificationRepository.findByUser_Id(u.getId());
         model.addAttribute("list_noti", list_notify);
-        return "pages/client/Notification";
+        return "pages/client/nofi";
     }
 
     @GetMapping("/user/account/otp")
@@ -266,5 +277,16 @@ public class CustomerInfomationController {
         }
     }
 
-
+    @GetMapping("/user/account/grade_weekly")
+    public String getGradeWeek(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User u = userRepository.findByEmail(email);
+        if (u == null) {
+            return "redirect:/login";
+        }
+        List<ProjectGradeWeekDTO> weeklyRequirement = weeklyRequirementService.getAllWeeklyProjectGrade(u.getId());
+        model.addAttribute("weeklyRequirements", weeklyRequirement);
+        return "pages/client/GradeWeeklyRequirement";
+    }
 }

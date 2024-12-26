@@ -1,4 +1,5 @@
 package com.manager.service;
+import com.manager.DTO.ProjectGradeWeekDTO;
 import com.manager.DTO.WeeklyProject;
 import com.manager.DTO.WeeklyRequirementDTO;
 import com.manager.model.Project;
@@ -8,6 +9,7 @@ import com.manager.repository.WeeklyRequirementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,6 +42,25 @@ public class WeeklyRequirementService {
                     ((Number) result[4]).longValue(),
                     (Integer) result[7],
                     (String) result[8]
+            );
+            weeklyProjects.add(custom);
+        }
+        return weeklyProjects;
+    }
+    public List<ProjectGradeWeekDTO> getAllWeeklyProjectGrade(Long id) {
+        List<Object[]> results = weeklyRequirementRepository.findAllProjectGrade(id);
+        List<ProjectGradeWeekDTO> weeklyProjects = new ArrayList<>();
+
+        for (Object[] result : results) {
+            ProjectGradeWeekDTO custom = new ProjectGradeWeekDTO(
+                    ((Number) result[0]).longValue(),
+                    (String) result[1],
+                    (Date) result[2],
+                    (String) result[3],
+                    (Integer) result[4],
+                    (Date) result[5],
+                    (Date) result[6],
+                    (BigDecimal) result[7]
             );
             weeklyProjects.add(custom);
         }

@@ -94,7 +94,7 @@
                                     <span class="toolMenuIcon icon-sakai-resetpass "></span><span class="menuTitle">Thông tin cá nhân</span>
                                 </a>
                             </li>
-                            <li class="selectedTool">
+                            <li>
                                 <a class="toolMenuLink "
                                    href="/user/account/history"
                                    title="Để truy cập vào một trang web bên ngoài trong trang web ">
@@ -108,7 +108,7 @@
                                     <span class="toolMenuIcon icon-sakai-iframe "></span><span class="menuTitle">Tiến độ</span>
                                 </a>
                             </li>
-                            <li>
+                            <li  class="selectedTool">
                                 <a class="toolMenuLink "
                                    href="/user/account/grade_weekly"
                                    title="Để truy cập vào một trang web bên ngoài trong trang web ">
@@ -155,7 +155,7 @@
                                 </style>
                                 <div class="my-tabslider-order">
                                     <div class="page-title">
-                                        <h1>Đồ án của tôi</h1>
+                                        <h1>Tiến độ</h1>
                                     </div>
                                 </div>
                                 <div class="my-account">
@@ -265,13 +265,11 @@
                                         <div class="table-order-row table-order-header">
                                             <div class="table-order-cell">STT</div>
                                             <div class="table-order-cell">Tên đề tài</div>
-                                            <div class="table-order-cell">Yêu cầu</div>
-                                            <div class="table-order-cell">Ngày bắt đầu</div>
-                                            <div class="table-order-cell">Ngày kết thúc</div>
+                                            <div class="table-order-cell">Mô tả</div>
+                                            <div class="table-order-cell">Tuần</div>
                                             <div class="table-order-cell">Điểm</div>
-                                            <div class="table-order-cell">Thao tác</div>
                                         </div>
-                                        <th:block th:if="${projects != null}" th:each="requirement,stt : ${projects}">
+                                        <th:block th:each="requirement,stt : ${weeklyRequirements}">
                                             <div class="table-order-row">
                                                 <div class="table-order-cell">
                                                     <div class="table-order-cell-content">
@@ -289,39 +287,31 @@
                                                 </div>
                                                 <div class="table-order-cell">
                                                     <div class="table-order-cell-content">
-                                                        <div class="order-history-date-mobile" >Mô tả</div>
-                                                        <div th:text="${requirement.description}">
+                                                        <div class="order-history-date-mobile" >Đánh giá</div>
+                                                        <div th:text="${requirement.comments}">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="table-order-cell">
                                                     <div class="table-order-cell-content">
-                                                        <div class="order-history-total-mobile" >Ngày bắt đầu</div>
-                                                        <div th:text="${date}"></div>
+                                                        <div class="order-history-total-mobile" >Tuần:</div>
+                                                        <div th:text="${ 'Tuần ' + requirement.week_number}">
                                                         </div>
-                                                </div>
-                                                <div class="table-order-cell">
-                                                    <div class="table-order-cell-content">
-                                                        <div class="order-history-total-mobile" >Ngày kết thúc</div>
-                                                        <div th:text="${requirement.endDate}"></div>
+                                                        <div th:text="${#dates.format(requirement.start_date, 'dd-MM-yyyy')} + ' -> ' + ${#dates.format(requirement.end_date, 'dd-MM-yyyy')}">
                                                         </div>
-                                                </div>
-                                                <div class="table-order-cell">
-                                                    <div class="table-order-cell-content">
-                                                        <div class="order-history-total-mobile" >Điểm</div>
-                                                        <div th:text="${grade}"></div>
                                                     </div>
                                                 </div>
                                                 <div class="table-order-cell">
                                                     <div class="table-order-cell-content">
-                                                        <div class="order-history-total-mobile" >Trạng thái</div>
-                                                        <div th:text="${status}"></div>
+                                                        <div class="order-history-date-mobile" >Điểm</div>
+                                                        <div th:text="${requirement.grade}">
                                                         </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </th:block>
-                                        <tr th:if="${#lists.isEmpty(projects)}">
-                                            <td colspan="4" class="text-muted text-center">Chưa có đồ án nào...</td>
+                                        <tr th:if="${#lists.isEmpty(weeklyRequirements)}">
+                                            <td colspan="4" class="text-muted text-center">No Data</td>
                                         </tr>
                                     </div>
 

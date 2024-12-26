@@ -18,6 +18,13 @@ public interface WeeklyRequirementRepository extends JpaRepository<WeeklyRequire
             "                       INNER JOIN project_registrations ON project_registrations.project_id = project.project_id WHERE project_registrations.student_id = ?1 AND project.status = 'DangTienHanh'",nativeQuery = true)
     List<Object[]> findAllProject(Long id);
 
+    @Query(value = " SELECT student_weekly_reports.student_report_id,student_weekly_reports.comments, student_weekly_reports.submission_date, project.title, weekly_requirements.week_number, weekly_requirements.start_date, weekly_requirements.end_date, evaluations.grade FROM weekly_requirements \n" +
+            "                                   INNER JOIN project ON weekly_requirements.project_id = project.project_id\n" +
+            "                                   INNER JOIN student_weekly_reports ON student_weekly_reports.requirement_id = weekly_requirements.requirement_id\n" +
+            "                                   INNER JOIN evaluations ON evaluations.student_report_id = student_weekly_reports.student_report_id\n" +
+            "                                  INNER JOIN project_registrations ON project_registrations.project_id = project.project_id WHERE project_registrations.student_id = ?1 AND project.status = 'DangTienHanh'",nativeQuery = true)
+    List<Object[]> findAllProjectGrade(Long id);
+
     @Query(value = " SELECT weekly_requirements.* FROM weekly_requirements \n" +
             "                                    INNER JOIN project ON weekly_requirements.project_id = project.project_id\n" +
             "                                    INNER JOIN project_lecturers ON project_lecturers.project_id = project.project_id \n" +

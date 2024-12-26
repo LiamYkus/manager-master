@@ -94,7 +94,7 @@
                                     <span class="toolMenuIcon icon-sakai-resetpass "></span><span class="menuTitle">Thông tin cá nhân</span>
                                 </a>
                             </li>
-                            <li class="selectedTool">
+                            <li>
                                 <a class="toolMenuLink "
                                    href="/user/account/history"
                                    title="Để truy cập vào một trang web bên ngoài trong trang web ">
@@ -155,7 +155,7 @@
                                 </style>
                                 <div class="my-tabslider-order">
                                     <div class="page-title">
-                                        <h1>Đồ án của tôi</h1>
+                                        <h1>Thông báo</h1>
                                     </div>
                                 </div>
                                 <div class="my-account">
@@ -261,68 +261,38 @@
                                             margin-top: 700px;
                                         }
                                     </style>
-                                    <div class="table-order-container">
-                                        <div class="table-order-row table-order-header">
-                                            <div class="table-order-cell">STT</div>
-                                            <div class="table-order-cell">Tên đề tài</div>
-                                            <div class="table-order-cell">Yêu cầu</div>
-                                            <div class="table-order-cell">Ngày bắt đầu</div>
-                                            <div class="table-order-cell">Ngày kết thúc</div>
-                                            <div class="table-order-cell">Điểm</div>
-                                            <div class="table-order-cell">Thao tác</div>
-                                        </div>
-                                        <th:block th:if="${projects != null}" th:each="requirement,stt : ${projects}">
-                                            <div class="table-order-row">
-                                                <div class="table-order-cell">
-                                                    <div class="table-order-cell-content">
-                                                        <div class="order-history-date-mobile">STT:</div>
-                                                        <div th:text="${stt.count}">
+                                    <div class="container mt-4">
+                                        <div id="notification-container">
+                                            <ul class="nav nav-tabs" id="notification-menu">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="all-tab" href="#" role="tab">Tất cả</a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content mt-3">
+                                                <div class="tab-pane fade show active" id="all" role="tabpanel">
+                                                    <div id="notification-body" class="list-group">
+                                                        <div th:each="i : ${list_noti}" th:unless="${list_noti.size() == 0}">
+                                                            <a href="#" class="list-group-item list-group-item-action d-flex align-items-start" style="text-decoration: none;">
+                                                                <div class="me-3 position-relative">
+                                                                    <i class="icon_nofi_gray"></i>
+                                                                </div>
+                                                                <div class="flex-grow-1">
+                                                                    <div class="d-flex w-100 justify-content-between">
+                                                                        <h5 class="mb-1" th:text="${i.title}"></h5>
+                                                                        <small class="text-muted" th:text="${#dates.format(i.date, 'dd-MM-yyyy HH:mm:ss')}"></small>
+                                                                    </div>
+                                                                    <p class="mb-1 text-secondary" th:text="${i.description}"></p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <div id="notification-body-empty" class="text-center py-3 text-muted" th:if="${list_noti.size() == 0}">
+                                                            <i class="bi bi-info-circle fs-4"></i>
+                                                            <p>Không có thông báo.</p>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="table-order-cell">
-                                                    <div class="table-order-cell-content">
-                                                        <div class="order-history-date-mobile">Tên đề tài:</div>
-                                                        <div th:text="${requirement.title}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="table-order-cell">
-                                                    <div class="table-order-cell-content">
-                                                        <div class="order-history-date-mobile" >Mô tả</div>
-                                                        <div th:text="${requirement.description}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="table-order-cell">
-                                                    <div class="table-order-cell-content">
-                                                        <div class="order-history-total-mobile" >Ngày bắt đầu</div>
-                                                        <div th:text="${date}"></div>
-                                                        </div>
-                                                </div>
-                                                <div class="table-order-cell">
-                                                    <div class="table-order-cell-content">
-                                                        <div class="order-history-total-mobile" >Ngày kết thúc</div>
-                                                        <div th:text="${requirement.endDate}"></div>
-                                                        </div>
-                                                </div>
-                                                <div class="table-order-cell">
-                                                    <div class="table-order-cell-content">
-                                                        <div class="order-history-total-mobile" >Điểm</div>
-                                                        <div th:text="${grade}"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="table-order-cell">
-                                                    <div class="table-order-cell-content">
-                                                        <div class="order-history-total-mobile" >Trạng thái</div>
-                                                        <div th:text="${status}"></div>
-                                                        </div>
                                                 </div>
                                             </div>
-                                        </th:block>
-                                        <tr th:if="${#lists.isEmpty(projects)}">
-                                            <td colspan="4" class="text-muted text-center">Chưa có đồ án nào...</td>
-                                        </tr>
+                                        </div>
                                     </div>
 
                                     <script type="text/javascript">

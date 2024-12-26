@@ -197,12 +197,14 @@
             <div class="form-group">
                 <label style="margin-left: 36px;">
                     <input type="checkbox"
-                           id="change-password-toggle"
-                           onclick="togglePasswordFields(this.checked)">
+                           name="change_password"
+                           id="change_password"
+                           onclick="changepass()"
+                           value="1">
                     Đổi mật khẩu</label>
             </div>
 
-            <div class="password-fields">
+            <div class="fhs-edit-account-password-form" style="display:none;">
                 <div class="form-group-row">
                     <div class="form-group">
                         <label for="current_password">Mật khẩu hiện tại*</label>
@@ -234,5 +236,17 @@
         </div>
     </main>
 </div>
+
+<script>
+    function changepass() {
+        var i = $(".fhs-edit-account-password-form").css('display');
+        console.log(i)
+        if (i === "none") {
+            $(".fhs-edit-account-password-form").show();
+        } else {
+            $(".fhs-edit-account-password-form").hide();
+        }
+    }
+</script>
 </body>
 </html>

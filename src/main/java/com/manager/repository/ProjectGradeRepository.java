@@ -33,4 +33,7 @@ public interface ProjectGradeRepository extends JpaRepository<ProjectGrade, Long
             "WHERE project_registrations.project_id = ?1",nativeQuery = true)
     Long findAllProjectByStudentID(Long id);
 
+    @Query(value = "SELECT project_grades.final_grade FROM project_grades WHERE project_grades.project_id = ?1",nativeQuery = true)
+    Integer findStudentID(Long id);
+
 }
