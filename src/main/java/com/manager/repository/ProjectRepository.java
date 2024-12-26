@@ -37,6 +37,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "                   WHERE pr.project_id IS NULL",nativeQuery = true)
     List<Project> findAllByStatusBy();
 
+    @Query(value = "SELECT p.* FROM project p WHERE p.status = ?1",nativeQuery = true)
+    List<Project> findAllByStatuss(String status);
+
     @Query(value = "SELECT * FROM project WHERE status = N'Đang tiến hành' or status = N'Hủy';",nativeQuery = true)
     List<Project> findAllPByStatus();
 

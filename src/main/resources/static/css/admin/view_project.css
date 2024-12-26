@@ -140,8 +140,6 @@ header label span {
     border: 1px solid #ccc;
     height: 30px;
     display: inline-flex;
-    align-items: center;
-    overflow-x: hidden;
 }
 
 .search-wrapper span {

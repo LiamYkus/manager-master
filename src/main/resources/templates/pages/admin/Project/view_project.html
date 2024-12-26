@@ -36,20 +36,17 @@
 
     <main class="main-container">
         <div class="form-container">
-            <div class="container-header">
-                <form id="frm" action="/admin/Project/view-project" method="get">
-                    <div class="search-wrapper">
-                        <span class="las la-search"></span>
-                        <input type="search" th:value="${email}" name="email" placeholder="Tìm kiếm...">
-                    </div>
-                </form>
-                <div class="dropdown-role">
-                    <select name="role-id" onchange="changeRole()">
-                        <option value="0">Tất cả</option>
-                        <option th:each="role : ${roles}" th:text="${role.roleName}" th:value="${role.id}"></option>
+            <form id="frm" action="/admin/Project/view-project" method="get">
+                <div class="search-wrapper">
+                    <span class="las la-search"></span>
+                    <input type="search" th:text="${title}" name="email" placeholder="Tìm kiếm...">
+                </div>
+                <div class="dropdown-role" style="float: left">
+                    <select name="role-id" class="dropdown-box" onchange="changeRole()">
+                        <option class="option" value="0">Tất cả</option>
                     </select>
                 </div>
-            </div>
+            </form>
             <div class="list-accounts">
                 <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
                     <a href="/admin/Project/create-project" class="btn btn-add"
